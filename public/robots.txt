@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://anext.dev/sitemap.xml

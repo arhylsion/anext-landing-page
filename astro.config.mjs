@@ -51,7 +51,6 @@ export default defineConfig({
         'gsap', 
         'motion',
         'lucide-react',
-        'simple-icons',
         'embla-carousel-react',
         'embla-carousel-autoplay'
       ],
