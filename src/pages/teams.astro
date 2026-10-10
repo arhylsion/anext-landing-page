@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import TeamIntro from '../components/teams/TeamIntro.astro';
+import Footer from '../components/Footer.astro';
 import type { ImageMetadata } from 'astro';
 import 'aos/dist/aos.css';
 
@@ -89,17 +90,28 @@ const teamMembers: TeamMember[] = [
 ---
 
 <MainLayout title="Our Team - ANEXT" description="Meet the talented team behind ANEXT engineering solutions"> 
+  <!-- Back Navigation -->
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4 flex items-center justify-between" aria-label="Breadcrumb navigation">
+    <a href="/" class="group inline-flex items-center gap-2.5 text-sm font-semibold text-slate-700 hover:text-cyan-600 transition-colors">
+      <span class="p-2 rounded-full bg-slate-100 group-hover:bg-cyan-50 text-slate-600 group-hover:text-cyan-600 transition-colors">←</span>
+      <span>Back to ANEXT Home</span>
+    </a>
+    <a href="/" class="text-sm font-mono text-slate-400 hover:text-slate-700 transition-colors">
+      anext.dev
+    </a>
+  </nav>
+
   <TeamIntro />
 
-        <!-- Section Header -->
-    <div class="text-center mb-20" data-aos="fade-up">
+  <!-- Section Header -->
+  <div class="text-center mb-20" data-aos="fade-up">
     <h2 
       class="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-b from-primary to-secondary bg-clip-text text-transparent"
       data-aos="fade-up" 
       data-aos-duration="800"
       data-aos-delay="100"
     >This is Ours!</h2>
-      </div>
+  </div>
   
   <!-- Team Members Grid -->
   <section class="py-16 md:py-24 bg-white">
@@ -139,21 +151,17 @@ const teamMembers: TeamMember[] = [
     </div>
   </section>
 
+  <!-- Reusable Footer from Index -->
+  <Footer />
+
+  <script>
+    import AOS from 'aos';
+    
+    AOS.init({
+      duration: 800,
+      easing: 'ease-out-quad',
+      once: true,
+      offset: 100,
+    });
+  </script>
 </MainLayout>
-
-<style>
-  :global(body) {
-    background: white;
-  }
-</style>
-
-<script>
-  import AOS from 'aos';
-  
-  AOS.init({
-    duration: 800,
-    easing: 'ease-out-quad',
-    once: false,
-    offset: 100,
-  });
-</script>

@@ -185,32 +185,6 @@ import 'aos/dist/aos.css';
 </section>
 
 <script>
-  import AOS from 'aos';
-  import Lenis from '@studio-freight/lenis';
-
-  // Initialize AOS
-  AOS.init({
-    duration: 800,
-    easing: 'ease-out',
-    once: true,
-    offset: 100
-  });
-
-  // Initialize Lenis Smooth Scroll
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    wheelMultiplier: 1,
-    touchMultiplier: 2,
-  });
-
-  // Request Animation Frame for Lenis (optimized)
-  function raf(time: number) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
-
   // Parallax Grid Setup
   const parallaxItems = document.querySelectorAll('[data-parallax-item]');
   const gridSection = document.getElementById('parallax-grid');
@@ -243,7 +217,7 @@ import 'aos/dist/aos.css';
     };
     
     updateSectionMeasurements();
-    window.addEventListener('resize', updateSectionMeasurements);
+    window.addEventListener('resize', updateSectionMeasurements, { passive: true });
 
     // Optimized scroll handler
     let ticking = false;
@@ -268,12 +242,12 @@ import 'aos/dist/aos.css';
       ticking = false;
     };
 
-    lenis.on('scroll', ({ scroll }: { scroll: number }) => {
+    window.addEventListener('scroll', () => {
       if (!ticking) {
-        requestAnimationFrame(() => updateParallax(scroll));
+        requestAnimationFrame(() => updateParallax(window.scrollY));
         ticking = true;
       }
-    });
+    }, { passive: true });
   }
 </script>
 
