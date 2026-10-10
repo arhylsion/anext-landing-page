@@ -183,8 +183,22 @@ html.light {
   -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
 }
 
-.testimonials-marquee-paused:hover .testimonials-marquee-track,
-.testimonials-marquee-paused:focus-within .testimonials-marquee-track {
+@keyframes testimonial-marquee-vertical {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+.testimonial-track {
+  animation: testimonial-marquee-vertical var(--marquee-duration, 35s) linear infinite;
+  will-change: transform;
+}
+
+.testimonials-marquee-paused:hover .testimonial-track,
+.testimonials-marquee-paused:focus-within .testimonial-track {
   animation-play-state: paused;
 }
 

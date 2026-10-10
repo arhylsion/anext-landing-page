@@ -66,61 +66,70 @@ export const testimonials: Testimonial[] = [
   },
 ];
 
-export const TestimonialsColumn = (props: {
-  className?: string;
-  testimonials: typeof testimonials;
-  duration?: number;
-}) => {
-  return (
-    <div className={`${props.className} testimonials-marquee-paused`}>
-      <motion.div
-        animate={{
-          translateY: "-50%",
-        }}
-        transition={{
-          duration: props.duration || 10,
-          repeat: Infinity,
-          ease: "linear",
-          repeatType: "loop",
-        }}
-        whileHover={{ scale: 0.995 }}
-        className="testimonials-marquee-track flex flex-col gap-6 pb-6 bg-background will-change-transform"
-      >
-        {[
-          ...new Array(2).fill(0).map((_, index) => (
-            <React.Fragment key={index}>
-              {props.testimonials.map(({ text, image, name, role }, i) => (
-                <div
-                  className="p-8 sm:p-10 rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)]/80 backdrop-blur-sm shadow-lg shadow-primary/10 max-w-xs w-full text-[var(--color-text)] transition-colors hover:border-white/30"
-                  key={i}
-                >
-                  <div className="text-sm sm:text-base leading-relaxed text-[var(--color-text)] font-light opacity-95">
-                    "{text}"
-                  </div>
-                  <div className="flex items-center gap-3 mt-6">
-                    <img
-                      width={40}
-                      height={40}
-                      src={image}
-                      alt={name}
-                      className="h-10 w-10 rounded-full object-cover border border-[var(--color-border)] shrink-0"
-                    />
-                    <div className="flex flex-col">
-                      <div className="font-medium tracking-tight leading-5 text-[var(--color-text)] text-sm sm:text-base">
-                        {name}
-                      </div>
-                      <div className="leading-5 opacity-60 tracking-tight text-xs text-[var(--color-text-muted)]">
-                        {role}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </React.Fragment>
-          )),
-        ]}
-      </motion.div>
+const TestimonialCard: React.FC<{
+  testimonial: Testimonial;
+  "aria-hidden"?: boolean;
+}> = ({ testimonial, "aria-hidden": ariaHidden }) => (
+  <div
+    aria-hidden={ariaHidden}
+    className="mb-6 p-8 sm:p-10 rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)]/80 backdrop-blur-sm shadow-lg shadow-black/5 dark:shadow-blue-950/10 max-w-xs w-full text-[var(--color-text)] select-none"
+  >
+    <div className="text-sm sm:text-base leading-relaxed text-[var(--color-text)] font-light opacity-95">
+      &ldquo;{testimonial.text}&rdquo;
     </div>
+    <div className="flex items-center gap-3 mt-6">
+      <img
+        width={40}
+        height={40}
+        src={testimonial.image}
+        alt={testimonial.name}
+        loading="lazy"
+        className="h-10 w-10 rounded-full object-cover border border-[var(--color-border)] shrink-0"
+      />
+      <div className="flex flex-col text-left">
+        <div className="font-medium tracking-tight leading-5 text-[var(--color-text)] text-sm sm:text-base">
+          {testimonial.name}
+        </div>
+        <div className="leading-5 opacity-60 tracking-tight text-xs text-[var(--color-text-muted)] font-mono">
+          {testimonial.role}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+export const TestimonialsColumn: React.FC<{
+  className?: string;
+  testimonials: Testimonial[];
+  duration?: number;
+  entranceDelay?: number;
+}> = ({ className, testimonials, duration = 35, entranceDelay = 0 }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{
+        duration: 0.8,
+        delay: entranceDelay,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className={`testimonials-marquee-paused ${className || ""}`}
+    >
+      <div
+        style={{
+          "--marquee-duration": `${duration}s`,
+        } as React.CSSProperties}
+        className="testimonial-track flex flex-col will-change-transform"
+      >
+        {testimonials.map((t, i) => (
+          <TestimonialCard key={`orig-${i}`} testimonial={t} />
+        ))}
+        {testimonials.map((t, i) => (
+          <TestimonialCard key={`clone-${i}`} testimonial={t} aria-hidden />
+        ))}
+      </div>
+    </motion.div>
   );
 };
 
@@ -136,47 +145,54 @@ export function TestimonialsSection() {
     >
       <div className="container relative z-10 mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
+          viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.55 }}
           className="font-mono text-xs uppercase tracking-widest text-[var(--color-text-muted)] opacity-80 mb-4 font-light"
         >
           &#123;&nbsp;TESTIMONIALS&nbsp;&#125;
         </motion.div>
+
         <motion.h2
-          initial={{ opacity: 0, y: 22, filter: 'blur(8px)' }}
-          whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
           className="font-medium lg:text-7xl md:text-6xl sm:text-5xl text-3xl text-center leading-[1.08] max-w-4xl mx-auto text-[var(--color-text)] tracking-tight"
         >
           Engineered trust, proven in production
         </motion.h2>
+
         <motion.p
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mt-4 text-sm sm:text-base md:text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto font-light"
         >
           See how product teams ship resilient platforms with ANEXT — from architecture audits to 24/7 scaling.
         </motion.p>
 
-        <div className="flex justify-center gap-6 mt-12 sm:mt-16 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] max-h-[720px] overflow-hidden">
+        <div className="flex justify-center gap-6 mt-12 sm:mt-16 [mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)] max-h-[720px] overflow-hidden">
           <TestimonialsColumn
             testimonials={firstColumn}
-            duration={28}
+            duration={30}
+            entranceDelay={0.1}
             className="w-full max-w-xs flex justify-center"
           />
+
           <TestimonialsColumn
             testimonials={secondColumn}
-            duration={34}
+            duration={44}
+            entranceDelay={0.22}
             className="hidden md:flex w-full max-w-xs justify-center"
           />
+
           <TestimonialsColumn
             testimonials={thirdColumn}
-            duration={30}
+            duration={36}
+            entranceDelay={0.35}
             className="hidden lg:flex w-full max-w-xs justify-center"
           />
         </div>

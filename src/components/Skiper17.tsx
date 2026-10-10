@@ -328,6 +328,7 @@ const StickyCard002: React.FC<StickyCard002Props> = ({
         scale: 1,
         rotation: 0,
         opacity: 1,
+        pointerEvents: "auto",
       });
 
       for (let i = 1; i < totalCards; i++) {
@@ -338,6 +339,7 @@ const StickyCard002: React.FC<StickyCard002Props> = ({
           scale: 0.96,
           rotation: initialRot,
           opacity: 0,
+          pointerEvents: "none",
         });
       }
 
@@ -375,6 +377,7 @@ const StickyCard002: React.FC<StickyCard002Props> = ({
             y: "-15%",
             rotation: exitRot,
             opacity: 0,
+            pointerEvents: "none",
             duration: 1,
             ease: "power2.inOut",
           },
@@ -388,6 +391,7 @@ const StickyCard002: React.FC<StickyCard002Props> = ({
             scale: 1,
             rotation: 0,
             opacity: 1,
+            pointerEvents: "auto",
             duration: 1,
             ease: "power2.inOut",
           },
@@ -421,6 +425,9 @@ const StickyCard002: React.FC<StickyCard002Props> = ({
               style={{
                 zIndex: i + 1,
                 transformOrigin: "center center",
+                opacity: i === 0 ? 1 : 0,
+                transform: i === 0 ? "none" : "translate3d(0, 100%, 0) scale(0.96)",
+                pointerEvents: i === 0 ? "auto" : "none",
               }}
               className="absolute inset-0 w-full h-full flex flex-col justify-between py-10 sm:py-14 md:py-16 px-4 sm:px-8 md:px-12 will-change-transform"
             >

@@ -127,10 +127,12 @@ export default function Timeline({
         if (!slider) return 0;
         const lastItem = lastItemRef.current;
         if (lastItem) {
-          const lastItemCenter = lastItem.offsetLeft + lastItem.offsetWidth / 2;
+          const currentX = (gsap.getProperty(slider, "x") as number) || 0;
+          const sliderLeft = slider.getBoundingClientRect().left - currentX;
+          const lastItemLeft = lastItem.getBoundingClientRect().left - currentX;
+          const lastItemCenter = (lastItemLeft - sliderLeft) + lastItem.offsetWidth / 2;
           const targetDist = lastItemCenter - window.innerWidth / 2;
-          const maxDist = slider.scrollWidth - window.innerWidth;
-          return Math.max(0, Math.min(targetDist, maxDist));
+          return Math.max(0, targetDist);
         }
         return Math.max(0, slider.scrollWidth - window.innerWidth);
       };
@@ -139,7 +141,7 @@ export default function Timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: () => `+=${window.innerHeight * 2.8}`,
+          end: () => `+=${Math.max(window.innerHeight * 4.2, getScrollDist() * 1.5)}`,
           pin: true,
           scrub: 0.8,
           anticipatePin: 0,
@@ -172,7 +174,8 @@ export default function Timeline({
       allJourneyItems.forEach((item, idx) => {
         if (idx === 0) return;
 
-        const t = 0.06 + (idx / (allJourneyItems.length - 1)) * 0.84;
+        const isLast = idx === allJourneyItems.length - 1;
+        const t = isLast ? 0.94 : 0.08 + (idx / (allJourneyItems.length - 1)) * 0.84;
 
         const branch = branchLinesRef.current[item.id];
         const dot = dotsRef.current[item.id];
@@ -181,7 +184,7 @@ export default function Timeline({
         if (branch) {
           masterTl.to(
             branch,
-            { scaleY: 1, duration: 0.03, ease: "power2.out" },
+            { scaleY: 1, duration: 0.035, ease: "power2.out" },
             Math.max(0, t - 0.015)
           );
         }
@@ -189,7 +192,7 @@ export default function Timeline({
         if (dot) {
           masterTl.to(
             dot,
-            { scale: 1, opacity: 1, duration: 0.02, ease: "back.out(2)" },
+            { scale: 1, opacity: 1, duration: 0.025, ease: "back.out(2)" },
             t
           );
         }
@@ -197,11 +200,13 @@ export default function Timeline({
         if (content) {
           masterTl.to(
             content,
-            { opacity: 1, y: 0, duration: 0.025, ease: "power2.out" },
+            { opacity: 1, y: 0, duration: 0.03, ease: "power2.out" },
             t
           );
         }
       });
+
+      masterTl.to({}, { duration: 0.4 }, 1);
     }, sectionRef);
 
     return () => ctx.revert();
@@ -221,9 +226,10 @@ export default function Timeline({
       <div className="h-screen w-full flex items-center overflow-hidden py-8">
         <div
           ref={wholeSliderRef}
-          className="flex h-[82vh] max-h-[700px] items-center gap-12 sm:gap-16 px-6 sm:px-12 pr-[40vw] will-change-transform shrink-0 w-max"
+          style={{ paddingRight: "max(75vw, 520px)" }}
+          className="flex h-[82vh] max-h-[700px] items-center gap-8 sm:gap-16 px-4 sm:px-12 will-change-transform shrink-0 w-max"
         >
-          <div className="h-full w-[26vw] min-w-[280px] max-w-[380px] shrink-0 overflow-hidden rounded-3xl border border-[var(--color-border)] shadow-2xl relative">
+          <div className="h-full w-[24vw] min-w-[220px] sm:min-w-[280px] max-w-[380px] shrink-0 overflow-hidden rounded-3xl border border-[var(--color-border)] shadow-2xl relative">
             <img
               src={imageUrl}
               alt={imageAlt}
@@ -246,20 +252,20 @@ export default function Timeline({
               <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-border)] absolute right-0 top-1/2 -translate-y-1/2 translate-x-1" />
             </div>
 
-            <div className="h-full w-[20vw] min-w-[220px] max-w-[320px] shrink-0 pr-8 flex flex-col justify-between py-6 z-20">
+            <div className="h-full w-[20vw] min-w-[190px] sm:min-w-[220px] max-w-[320px] shrink-0 pr-4 sm:pr-8 flex flex-col justify-between py-6 z-20">
               <div className="h-1/2 flex items-end pb-8">
-                <h2 className="font-sans font-bold text-3xl sm:text-4xl md:text-5xl tracking-tight leading-[1.08] text-[var(--color-text)]">
+                <h2 className="font-sans font-bold text-2xl sm:text-4xl md:text-5xl tracking-tight leading-[1.08] text-[var(--color-text)]">
                   {title}
                 </h2>
               </div>
               <div className="h-1/2 flex items-start pt-8">
-                <p className="font-mono font-medium text-sm sm:text-base tracking-widest uppercase text-[var(--color-text)] opacity-80">
+                <p className="font-mono font-medium text-xs sm:text-base tracking-widest uppercase text-[var(--color-text)] opacity-80">
                   {periodLabel}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-x-16 sm:gap-x-24 md:gap-x-32 lg:gap-x-40 h-full pl-6">
+            <div className="flex items-center gap-x-10 sm:gap-x-24 md:gap-x-32 lg:gap-x-40 h-full pl-4 sm:pl-6">
               {allJourneyItems.map((item, idx) => {
                 const isTop = item.position === "top";
                 const isLast = idx === allJourneyItems.length - 1;
@@ -268,7 +274,7 @@ export default function Timeline({
                   <div
                     key={item.id}
                     ref={isLast ? lastItemRef : undefined}
-                    className="relative w-[280px] sm:w-[320px] md:w-[360px] lg:w-[400px] shrink-0 h-full flex flex-col justify-between"
+                    className="relative w-[260px] sm:w-[320px] md:w-[360px] lg:w-[400px] shrink-0 h-full flex flex-col justify-between"
                   >
                     <div className="h-1/2 flex flex-col justify-end pb-8 relative">
                       {isTop && (
