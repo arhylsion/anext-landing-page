@@ -1,4 +1,3 @@
-import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 
@@ -33,17 +32,20 @@ export function MobileMenu({ open, close, items }: MobileMenuProps) {
     if (open) {
       document.body.style.overflow = "hidden";
       if (linksRef.current.length > 0) {
-        gsap.fromTo(
-          linksRef.current,
-          { y: 30, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.45,
-            stagger: 0.06,
-            ease: "power3.out",
-          },
-        );
+        linksRef.current.forEach((link, idx) => {
+          link.animate(
+            [
+              { transform: "translateY(24px)", opacity: 0 },
+              { transform: "translateY(0)", opacity: 1 },
+            ],
+            {
+              duration: 400,
+              delay: idx * 50,
+              easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+              fill: "forwards",
+            }
+          );
+        });
       }
     } else {
       document.body.style.overflow = "";

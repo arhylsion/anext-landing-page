@@ -1,8 +1,4 @@
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef } from "react";
-
-gsap.registerPlugin(ScrollTrigger);
+import React, { useEffect, useRef, useState } from "react";
 
 interface BlurInProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -22,115 +18,72 @@ interface BlurInProps extends React.HTMLAttributes<HTMLDivElement> {
   disappearEase?: string;
   onComplete?: () => void;
   onDisappearanceComplete?: () => void;
+  className?: string;
 }
 
 export function BlurIn({
   children,
-  container,
   distance = 0,
   direction = "vertical",
   reverse = false,
-  duration = 1.8,
-  ease = "power3.out",
-  initialOpacity = 0,
-  animateOpacity = true,
-  scale = 1,
+  duration = 0.9,
   threshold = 0.1,
   delay = 0,
-  disappearAfter = 0,
-  disappearDuration = 0.5,
-  disappearEase = "power3.in",
-  onComplete,
-  onDisappearanceComplete,
   className = "",
+  style,
   ...props
 }: BlurInProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) {
+    if (!el) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setIsVisible(true);
       return;
     }
 
-    const ctx = gsap.context(() => {
-      let scrollerTarget: Element | string | null =
-        document.getElementById("snap-main-container") || null;
-
-      if (typeof scrollerTarget === "string") {
-        scrollerTarget = document.querySelector(scrollerTarget);
-      }
-      const axis = direction === "horizontal" ? "x" : "y";
-      const offset = reverse ? -distance : distance;
-      const startPct = (1 - threshold) * 100;
-
-      gsap.set(el, {
-        [axis]: offset,
-        scale,
-        opacity: animateOpacity ? initialOpacity : 1,
-        visibility: "visible",
-        filter: "blur(10px)",
-      });
-
-      const tl = gsap.timeline({
-        paused: true,
-        delay,
-        onComplete: () => {
-          if (onComplete) onComplete();
-          if (disappearAfter > 0) {
-            gsap.to(el, {
-              [axis]: reverse ? distance : -distance,
-              opacity: animateOpacity ? initialOpacity : 0,
-              delay: disappearAfter,
-              duration: disappearDuration,
-              ease: disappearEase,
-              onComplete: () => onDisappearanceComplete?.(),
-            });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
           }
-        },
-      });
+        });
+      },
+      { threshold }
+    );
 
-      tl.to(el, {
-        [axis]: 0,
-        scale: 1,
-        opacity: 1,
-        duration,
-        filter: "blur(0px)",
-        ease,
-      });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
 
-      ScrollTrigger.create({
-        trigger: el,
-        scroller: scrollerTarget || window,
-        start: `top ${startPct}%`,
-        once: true,
-        onEnter: () => tl.play(),
-      });
-    }, el);
-
-    return () => ctx.revert();
-  }, [
-    container,
-    distance,
-    direction,
-    reverse,
-    duration,
-    ease,
-    initialOpacity,
-    animateOpacity,
-    scale,
-    threshold,
-    delay,
-    disappearAfter,
-    disappearDuration,
-    disappearEase,
-    onComplete,
-    onDisappearanceComplete,
-  ]);
+  const offset = reverse ? -distance : distance;
+  const transformStart =
+    direction === "horizontal"
+      ? `translate3d(${offset}px, 0, 0)`
+      : `translate3d(0, ${offset}px, 0)`;
 
   return (
-    <div ref={ref} className={`invisible ${className}`} {...props}>
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        ...style,
+        opacity: isVisible ? 1 : 0,
+        filter: isVisible ? "blur(0px)" : "blur(8px)",
+        transform: isVisible ? "translate3d(0, 0, 0)" : transformStart,
+        transition: `opacity ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, filter ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
+        willChange: isVisible ? "auto" : "opacity, transform, filter",
+      }}
+      {...props}
+    >
       {children}
     </div>
   );
 }
+
+export default BlurIn;

@@ -156,7 +156,7 @@ export function BrandPartnersCarousel({
                           Your brand here
                         </span>
                       </div>
-                      <span className="text-[10px] sm:text-xs font-mono text-[var(--color-text-muted)] opacity-60 group-hover:opacity-100 transition-opacity">
+                      <span className="text-[10px] sm:text-xs font-mono text-[var(--color-text-muted)] opacity-85 group-hover:opacity-100 transition-opacity">
                         Partner with ANEXT
                       </span>
                     </a>
@@ -169,7 +169,8 @@ export function BrandPartnersCarousel({
                         height="56"
                         loading="eager"
                         decoding="async"
-                        className="partner-brand-logo h-10 sm:h-12 md:h-14 w-auto object-contain max-w-[140px] sm:max-w-[160px] opacity-85 group-hover:opacity-100 transition-opacity"
+                        style={{ aspectRatio: "160 / 56" }}
+                        className="partner-brand-logo h-10 sm:h-12 md:h-14 w-auto aspect-[160/56] object-contain max-w-[140px] sm:max-w-[160px] opacity-85 group-hover:opacity-100 transition-opacity"
                       />
                       <span className="text-xs sm:text-sm font-semibold text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors tracking-tight text-center max-w-[160px] sm:max-w-[180px] truncate">
                         {brand.name}

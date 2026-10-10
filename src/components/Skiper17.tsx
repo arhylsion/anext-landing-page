@@ -275,9 +275,9 @@ const CardBottomColumns: React.FC<{ items: ProcessCardItem[] }> = ({ items }) =>
             )}
           >
             <div>
-              <h4 className="text-sm sm:text-base font-semibold text-[var(--color-text)] tracking-tight mb-2">
+              <h3 className="text-sm sm:text-base font-semibold text-[var(--color-text)] tracking-tight mb-2">
                 {item.title}
-              </h4>
+              </h3>
               <p className="font-mono text-xs sm:text-sm text-[var(--color-text-muted)] leading-relaxed font-light">
                 {item.description}
               </p>
@@ -345,11 +345,18 @@ const StickyCard002: React.FC<StickyCard002Props> = ({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: `+=${window.innerHeight * (totalCards - 1) * 1.3}`,
+          end: () => `+=${window.innerHeight * (totalCards - 1) * 1.15}`,
           pin: stickyRef.current,
-          scrub: 0.8,
+          scrub: 0.6,
           pinSpacing: true,
-          anticipatePin: 0,
+          snap: {
+            snapTo: 1 / (totalCards - 1),
+            duration: { min: 0.25, max: 0.55 },
+            delay: 0.08,
+            ease: "power2.inOut",
+          },
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
         },
       });
 
@@ -418,9 +425,9 @@ const StickyCard002: React.FC<StickyCard002Props> = ({
               className="absolute inset-0 w-full h-full flex flex-col justify-between py-10 sm:py-14 md:py-16 px-4 sm:px-8 md:px-12 will-change-transform"
             >
               <div className="flex flex-col items-center text-center">
-                <h3 className="text-4xl sm:text-6xl md:text-7xl font-semibold tracking-tight text-[var(--color-text)] mb-3">
+                <h2 className="text-4xl sm:text-6xl md:text-7xl font-semibold tracking-tight text-[var(--color-text)] mb-3">
                   {card.title}
-                </h3>
+                </h2>
                 <p className="font-mono text-xs sm:text-sm md:text-base text-[var(--color-text-muted)] max-w-2xl mx-auto leading-relaxed font-light">
                   {card.description}
                 </p>

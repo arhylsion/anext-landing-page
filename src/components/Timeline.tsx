@@ -78,7 +78,7 @@ const allJourneyItems: JourneyItem[] = [
 export default function Timeline({
   title = "Why ANEXT Exists",
   periodLabel = "2020 — 2026",
-  imageUrl = "https://cdn.21st.dev/assets/mirror/b0/b0c41784074f76ac5fb6b447da87780c901135841317a096241371f24bc13ddd.jpg",
+  imageUrl = "/images/about-timeline.jpg",
   imageAlt = "ANEXT engineering workspace",
   className,
 }: TimelineProps) {

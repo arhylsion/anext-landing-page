@@ -1,41 +1,44 @@
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef } from "react";
-
-gsap.registerPlugin(ScrollTrigger);
+import React from "react";
 
 export function WordByWord({ children }: { children: string }) {
-  const containerRef = useRef<HTMLSpanElement>(null);
   const words = children.split(" ");
 
-  useEffect(() => {
-    if (!containerRef.current) {
-      return;
-    }
-
-    const ctx = gsap.context(() => {
-      const wordSpans = containerRef.current!.querySelectorAll(".word");
-
-      gsap.from(wordSpans, {
-        opacity: 0,
-        y: 0,
-        stagger: 0.2,
-        duration: 0.85,
-        filter: "blur(10px)",
-        ease: "power3.out",
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <span ref={containerRef}>
+    <span>
+      <style>{`
+        @keyframes wordBlurIn {
+          0% {
+            opacity: 0;
+            filter: blur(8px);
+            transform: translateY(4px);
+          }
+          100% {
+            opacity: 1;
+            filter: blur(0px);
+            transform: translateY(0);
+          }
+        }
+        .hero-word {
+          display: inline-block;
+          opacity: 0;
+          animation: wordBlurIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-word {
+            opacity: 1 !important;
+            filter: none !important;
+            transform: none !important;
+            animation: none !important;
+          }
+        }
+      `}</style>
       {words.map((word, index) => (
         <span key={index}>
           <span
-            className="word"
-            style={{ display: "inline-block" }}
+            className="hero-word"
+            style={{
+              animationDelay: `${0.08 + index * 0.07}s`,
+            }}
           >
             {word}
           </span>
@@ -45,3 +48,5 @@ export function WordByWord({ children }: { children: string }) {
     </span>
   );
 }
+
+export default WordByWord;

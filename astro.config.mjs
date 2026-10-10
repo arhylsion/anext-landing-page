@@ -26,6 +26,9 @@ function unwrapImageImports() {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://anext.dev',
+  build: {
+    inlineStylesheets: 'always',
+  },
   integrations: [react()],
   vite: {
     plugins: [tailwindcss(), unwrapImageImports(), svgrPlugin()],

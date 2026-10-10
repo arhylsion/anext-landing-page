@@ -930,7 +930,7 @@ export default function ShutterGlyphFooter({
         <div className="sgf-grid">
           {columns.map((col) => (
             <div key={col.title} className="sgf-col sgf-fade" style={delay()}>
-              <h4 className="sgf-col-title">{col.title}</h4>
+              <h3 className="sgf-col-title">{col.title}</h3>
               <ul className="sgf-list">
                 {col.links.map((link, linkIdx) => (
                   <ScrambleLink
