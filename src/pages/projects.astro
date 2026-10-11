@@ -1,0 +1,63 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import HeroIsland from '../components/HeroIsland';
+import WorksWheel from '../components/WorksWheel';
+import Footer from '../components/Footer.astro';
+import { PrimaryButton } from '../ui/components/buttons/primary-button/primary-button';
+import { PROJECTS } from '../data/projects';
+---
+
+<MainLayout 
+  title="Our Projects - ANEXT" 
+  description="Explore the systems and architectures engineered by ANEXT."
+>
+  <main id="main-content" class="w-full relative overflow-x-hidden transition-colors duration-300">
+    <HeroIsland client:load variant="menu" floating={false} />
+
+    <section class="min-h-[75vh] sm:min-h-[80vh] flex flex-col items-center justify-center text-center px-4 pt-12 pb-16 relative z-10">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight wheel-title mb-3">
+        Our Projects
+      </h1>
+      <p class="text-sm sm:text-base wheel-muted font-mono max-w-lg mx-auto">
+        We build systems that grow with you.
+      </p>
+      <div class="mt-8 text-xs font-mono wheel-muted flex items-center gap-2 select-none">
+        <span>Scroll down to explore</span>
+        <span class="animate-bounce">↓</span>
+      </div>
+    </section>
+
+    <!-- 3D WorksWheel (Pins at the idle ring, turns through projects, unpins cleanly to CTA) -->
+    <WorksWheel 
+      client:load 
+      items={PROJECTS} 
+      label="Our Projects" 
+    />
+
+    <!-- Final CTA Section before Footer -->
+    <section class="min-h-[65vh] sm:min-h-[75vh] py-24 sm:py-32 flex flex-col items-center justify-center text-center px-4 relative z-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-xs font-mono wheel-muted mb-4 backdrop-blur-sm">
+        <span>Ready to scale?</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight wheel-title mb-4 max-w-2xl">
+        Explore What's Next
+      </h2>
+      <p class="text-sm sm:text-base wheel-muted font-mono max-w-md mx-auto mb-8 leading-relaxed">
+        Discover how ANEXT can engineer platforms and distributed systems tailored to your scale.
+      </p>
+      <PrimaryButton
+        client:load
+        href="/#contact"
+        className="min-h-[50px] sm:min-h-[54px] px-8 py-3.5 rounded-[20px] text-base font-semibold shadow-lg"
+      >
+        See More
+      </PrimaryButton>
+      <div class="mt-14 w-12 h-px bg-slate-200 dark:bg-white/10 mb-4"></div>
+      <p class="text-xs font-mono wheel-muted uppercase tracking-widest">
+        ANEXT Engineering &bull; Architecture & Distributed Systems
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</MainLayout>

@@ -17,21 +17,21 @@ export const MENU_ITEMS: Array<MenuItem> = [
   {
     id: "services",
     label: "Services",
-    href: "#services",
+    href: "/#services",
   },
   {
     id: "process",
     label: "Process",
-    href: "#process",
+    href: "/#process",
   },
   {
     id: "about",
     label: "About",
-    href: "#about",
+    href: "/#about",
   },
   {
     id: "contact",
     label: "Contact",
-    href: "#contact",
+    href: "/#contact",
   },
 ];

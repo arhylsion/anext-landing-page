@@ -44,6 +44,7 @@ export type HeaderProps = {
   menuAction?: React.ReactNode;
   background?: boolean;
   variant?: "full" | "menu";
+  floating?: boolean;
 };
 
 const HIDE_SUBMENU_DELAY = 2000;
@@ -64,6 +65,7 @@ export function Header({
   menuAction,
   background = true,
   variant = "full",
+  floating = true,
   actions = (
     <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-5 w-full max-w-md sm:max-w-none mx-auto">
       <PrimaryButton
@@ -73,7 +75,7 @@ export function Header({
         Talk to our Engineers
       </PrimaryButton>
       <TransparentButton
-        href="#services"
+        href="/projects"
         className="w-full sm:w-auto text-center justify-center min-h-[52px] sm:min-h-[56px] px-8 py-4 rounded-[20px] text-base font-semibold"
       >
         Explore Things We Did
@@ -112,6 +114,7 @@ export function Header({
     });
 
     const handleScroll = () => {
+      if (!floating) return;
       const scrollY = window.scrollY || window.pageYOffset;
       if (scrollY > 120) {
         setIsScrolled(true);
@@ -120,13 +123,17 @@ export function Header({
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    if (floating) {
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      handleScroll();
+    }
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      if (floating) {
+        window.removeEventListener("scroll", handleScroll);
+      }
       observer.disconnect();
     };
-  }, []);
+  }, [floating]);
 
   useEffect(() => {
     if (!isCapsuleHovered) return;
@@ -258,18 +265,93 @@ export function Header({
     };
   }, [fadeInColors]);
 
+  if (variant === "menu") {
+    return (
+      <header className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-5 sm:pt-7 z-50 relative">
+        <SpotlightCard className="rounded-[20px] sm:rounded-[32px]">
+          <div
+            className="flex items-center px-5 py-3.5 sm:p-5 bg-white/10 dark:bg-black/60 backdrop-blur-xl shadow-2xl sm:rounded-[32px] rounded-[20px] justify-between text-white transition-all duration-300 border-0 outline-none"
+          >
+            <div className="flex justify-start">
+              <a href="/" className="flex items-center gap-3 group" aria-label="Home">
+                <img
+                  src="/images/anext-logo-only.webp"
+                  alt="ANEXT Logo"
+                  width="40"
+                  height="40"
+                  className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                />
+              </a>
+            </div>
+
+            <nav className="lg:flex hidden justify-center font-medium text-sm lg:text-base flex-1">
+              {menuItems.map((item) => (
+                <div
+                  key={item.id}
+                  onMouseEnter={(e) => onMenuItemMouseEnter(item, e)}
+                  onMouseLeave={(e) => onMenuItemMouseLeave(item, e)}
+                  className={`px-4 menu-item ${item.children ? "menu-item--children" : ""}`}
+                >
+                  <a
+                    href={item.href}
+                    className={
+                      item === hoveringTarget || hoveringTarget === null
+                        ? "text-white duration-300 font-medium"
+                        : "text-white/30 blur-[1.5px] duration-300"
+                    }
+                  >
+                    {item === hoveringTarget ? (
+                      <ShineText className="inline text-white">{item.label}</ShineText>
+                    ) : (
+                      item.label
+                    )}
+                  </a>
+                </div>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleTheme}
+                aria-label="Toggle dark/light theme"
+                className="p-1.5 rounded-full border border-white/20 hover:bg-white/10 text-white transition-colors cursor-pointer"
+              >
+                {isLight ? <Moon className="w-3.5 h-3.5 text-white" /> : <Sun className="w-3.5 h-3.5 text-amber-300" />}
+              </button>
+              <button
+                type="button"
+                aria-label="Toggle navigation menu"
+                aria-expanded={mobileMenuOpen}
+                className="lg:hidden p-1.5 rounded-full border border-white/20 text-white hover:bg-white/10 cursor-pointer"
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
+              >
+                <Menu className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </SpotlightCard>
+
+        <MobileMenu
+          open={mobileMenuOpen}
+          close={() => setMobileMenuOpen(false)}
+          items={menuItems}
+        />
+      </header>
+    );
+  }
+
   return (
-    <header className={`${variant === "menu" ? "" : "p-3 sm:p-6 md:p-8 lg:p-10"}`}>
+    <header className="p-3 sm:p-6 md:p-8 lg:p-10">
       <div
         ref={headerRef}
-        className={`flex justify-center overflow-hidden relative pb-14 sm:pb-20 md:pb-24 sm:rounded-[36px] rounded-[24px] transition-opacity duration-500
+        className={`flex justify-center overflow-hidden relative sm:rounded-[36px] rounded-[24px] transition-opacity duration-500
           ${variant === "menu"
-            ? ""
+            ? "pb-8 sm:pb-12 md:pb-14"
             : shrink
-              ? "xl:h-[91vh] min-h-[560px] sm:min-h-[680px] md:min-h-[760px] xl:max-h-[920px]"
+              ? "pb-14 sm:pb-20 md:pb-24 xl:h-[91vh] min-h-[560px] sm:min-h-[680px] md:min-h-[760px] xl:max-h-[920px]"
               : bottomPanel
-                ? "min-h-[560px] sm:min-h-[680px] flex-col items-center"
-                : "xl:h-[85vh] min-h-[560px] sm:min-h-[680px] xl:max-h-[920px]"
+                ? "pb-14 sm:pb-20 md:pb-24 min-h-[560px] sm:min-h-[680px] flex-col items-center"
+                : "pb-14 sm:pb-20 md:pb-24 xl:h-[85vh] min-h-[560px] sm:min-h-[680px] xl:max-h-[920px]"
           }`}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#050b14] via-[#0d1f3c] to-[#050b14]"></div>
