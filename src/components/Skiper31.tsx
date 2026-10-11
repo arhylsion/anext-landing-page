@@ -197,7 +197,7 @@ const Skiper31: React.FC<Skiper31Props> = ({
 
           <div className="mt-8 flex items-center gap-4">
             <a
-              href="#contact"
+              href="/teams"
               className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[var(--color-text)] text-[var(--color-bg)] font-semibold text-xs sm:text-sm tracking-wide transition-all hover:scale-105 shadow-lg"
             >
               Talk to our Engineers &rarr;

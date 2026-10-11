@@ -19,7 +19,7 @@ export function HeroIsland({
   actions = (
     <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-5 w-full max-w-md sm:max-w-none mx-auto">
       <PrimaryButton
-        href="#contact"
+        href="/teams"
         className="w-full sm:w-auto text-center justify-center min-h-[52px] sm:min-h-[56px] px-8 py-4 rounded-[20px] text-base font-semibold shadow-lg"
       >
         Talk to our Engineers
