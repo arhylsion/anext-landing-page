@@ -74,6 +74,24 @@ const teamMembers = [
   title="Our Team - ANEXT" 
   description="Meet the engineers, designers, and innovators behind ANEXT engineering solutions."
 >
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "Our Team - ANEXT",
+    "url": "https://anext.dev/teams",
+    "description": "Meet the engineers, designers, and innovators behind ANEXT engineering solutions.",
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": teamMembers.map((m, idx) => ({
+        "@type": "Person",
+        "position": idx + 1,
+        "name": m.name,
+        "jobTitle": m.role,
+        "description": m.bio,
+        "image": `https://anext.dev${m.image}`
+      }))
+    }
+  })} />
   <main id="main-content" class="w-full relative overflow-x-clip transition-colors duration-300">
     <!-- Navbar from HeroIsland -->
     <HeroIsland client:load variant="menu" floating={false} />
@@ -88,13 +106,20 @@ const teamMembers = [
 
         <!-- Intro layer (Unfolds on initial scroll) -->
         <div class="intro" id="intro">
-          <div>
+          <div class="intro-headline">
             <p class="eyebrow font-mono" id="eyebrow">
               <i class="eyebrow-line"></i>
               <span>The People Behind ANEXT</span>
             </p>
-            <h1 class="title font-sans" id="team-title" data-split>
-              Every great system is built by great people
+            <h1 class="title font-sans" id="team-title">
+              <span class="m"><span class="w">Every</span></span>{" "}
+              <span class="m"><span class="w">great</span></span>{" "}
+              <span class="m"><span class="w">system</span></span>{" "}
+              <span class="m"><span class="w">is</span></span>{" "}
+              <span class="m"><span class="w">built</span></span>{" "}
+              <span class="m"><span class="w">by</span></span>{" "}
+              <span class="m"><span class="w">great</span></span>{" "}
+              <span class="m"><span class="w">people</span></span>
             </h1>
           </div>
           <div class="side">
@@ -166,6 +191,10 @@ const teamMembers = [
                       alt={member.name} 
                       draggable="false"
                       class="photo"
+                      loading="lazy"
+                      decoding="async"
+                      width="370"
+                      height="300"
                     />
                   </div>
                   <div class="info">
@@ -245,7 +274,10 @@ const teamMembers = [
 
   .stage-glow {
     position: absolute;
-    inset: -20%;
+    top: 0;
+    bottom: -20%;
+    left: -20%;
+    right: -20%;
     z-index: -2;
     background:
       radial-gradient(40% 40% at var(--gx, 70%) var(--gy, 40%), hsl(var(--hue) 85% 58% / 0.28), transparent 70%),
@@ -288,6 +320,7 @@ const teamMembers = [
     -webkit-text-stroke: 1px rgba(255, 255, 255, 0.08);
     will-change: transform;
     pointer-events: none;
+    transform: translate3d(10vw, 0, 0);
   }
 
   html.light .stage-ghost {
@@ -305,6 +338,9 @@ const teamMembers = [
     padding: 0 6vw;
     will-change: transform, opacity;
     z-index: 10;
+  }
+
+  .side {
   }
 
   .eyebrow {
@@ -698,14 +734,20 @@ const teamMembers = [
     font-size: 12px;
     opacity: var(--hint, 1);
     z-index: 20;
+    contain: layout paint;
   }
 
   @media (max-width: 820px) {
     .intro {
       grid-template-columns: 1fr;
-      gap: 3vh;
+      gap: 2.5vh;
       align-content: center;
       padding: 0 24px;
+    }
+    .intro-headline {
+      min-height: 195px;
+    }
+    .side {
     }
     .side p {
       margin-bottom: 2.5vh;
@@ -764,12 +806,6 @@ const teamMembers = [
       return;
     }
 
-    // Split title into masked words
-    const t = document.querySelector("[data-split]");
-    if (t) {
-      const words = t.textContent?.trim().split(/\s+/) || [];
-      t.innerHTML = words.map(w => `<span class="m"><span class="w">${w}</span></span>`).join(" ");
-    }
     const wEls = Array.from(document.querySelectorAll<HTMLElement>(".title .w"));
 
     // Select pre-rendered cards
@@ -829,11 +865,20 @@ const teamMembers = [
     let hue = 228;
     let hueT = 228;
     let ready = false;
+    let isTicking = false;
 
     function read() {
       if (!section) return;
       const r = section.getBoundingClientRect();
       target = clamp(-r.top / (r.height - vh));
+      scheduleTick();
+    }
+
+    function scheduleTick() {
+      if (!isTicking) {
+        isTicking = true;
+        requestAnimationFrame(tick);
+      }
     }
 
     function goTo(i: number) {
@@ -849,6 +894,7 @@ const teamMembers = [
       } else {
         window.scrollTo({ top: targetY, behavior: "smooth" });
       }
+      scheduleTick();
     }
 
     cardButtons.forEach((b, i) => {
@@ -887,57 +933,47 @@ const teamMembers = [
 
     function playEntrance() {
       if (isReduced) {
-        gsap.set(wEls, { yPercent: 0, opacity: 1, rotate: 0 });
-        gsap.set([eyebrow, lede, stats], { opacity: 1, y: 0 });
         statEls.forEach((el) => {
           el.textContent = (el.dataset.to || "0") + (el.dataset.suf || "");
         });
         return;
       }
 
-      // Initial hidden states
-      gsap.set(wEls, { yPercent: 125, rotate: 4, opacity: 0 });
-      gsap.set(eyebrow, { opacity: 0, x: -24 });
-      gsap.set(lede, { opacity: 0, y: 22 });
-      gsap.set(statCards, { opacity: 0, y: 28 });
-      gsap.set(hud, { opacity: 0, y: 16 });
-      gsap.set(hint, { opacity: 0 });
-
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
-      tl.to(eyebrow, {
-        opacity: 1,
-        x: 0,
-        duration: 0.8,
+      tl.from(eyebrow, {
+        opacity: 0,
+        x: -20,
+        duration: 0.75,
         ease: "power3.out",
-      }, 0.1)
-      .to(wEls, {
-        yPercent: 0,
-        rotate: 0,
-        opacity: 1,
-        duration: 1.15,
-        stagger: 0.045,
+      }, 0.05)
+      .from(wEls, {
+        yPercent: 100,
+        rotate: 3,
+        opacity: 0,
+        duration: 0.95,
+        stagger: 0.04,
         ease: "power4.out",
-      }, 0.18)
-      .to(lede, {
-        opacity: 1,
-        y: 0,
-        duration: 0.9,
-        ease: "power3.out",
-      }, 0.5)
-      .to(statCards, {
-        opacity: 1,
-        y: 0,
-        duration: 0.85,
-        stagger: 0.08,
-        ease: "power3.out",
-      }, 0.55)
-      .to([hud, hint], {
-        opacity: 1,
-        y: 0,
+      }, 0.12)
+      .from(lede, {
+        opacity: 0,
+        y: 16,
         duration: 0.8,
         ease: "power3.out",
-      }, 0.85);
+      }, 0.35)
+      .from(statCards, {
+        opacity: 0,
+        y: 18,
+        duration: 0.75,
+        stagger: 0.06,
+        ease: "power3.out",
+      }, 0.4)
+      .from([hud, hint], {
+        opacity: 0,
+        y: 14,
+        duration: 0.7,
+        ease: "power3.out",
+      }, 0.65);
 
       // Dynamic count-up for numbers
       statEls.forEach((el, i) => {
@@ -946,8 +982,8 @@ const teamMembers = [
         const obj = { val: 0 };
         gsap.to(obj, {
           val: toNum,
-          duration: 1.6,
-          delay: 0.7 + i * 0.1,
+          duration: 1.4,
+          delay: 0.5 + i * 0.08,
           ease: "power2.out",
           onUpdate: () => {
             el.textContent = Math.round(obj.val) + suf;
@@ -958,15 +994,11 @@ const teamMembers = [
       // Ambient Aurora glow bloom
       gsap.fromTo(glow, 
         { scale: 0.7, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.8, ease: "power2.out" }
+        { scale: 1, opacity: 1, duration: 1.5, ease: "power2.out" }
       );
     }
 
-    function frame() {
-      cur += (target - cur) * 0.12;
-      if (Math.abs(target - cur) < 0.00004) cur = target;
-      const p = cur;
-
+    function render(p: number) {
       glow.style.setProperty("--gx", `${70 - p * 40}%`);
       glow.style.setProperty("--gy", `${40 + Math.sin(p * 6) * 18}%`);
 
@@ -1036,17 +1068,30 @@ const teamMembers = [
       hint.style.setProperty("--hint", String(clamp(1 - p * 14) * (1 - l)));
       ghost.style.opacity = String(1 - l);
       glow.style.opacity = String(1 - l * 0.85);
+    }
 
-      requestAnimationFrame(frame);
+    function tick() {
+      cur += (target - cur) * 0.12;
+      const diff = Math.abs(target - cur);
+      if (diff < 0.0001) {
+        cur = target;
+      }
+      render(cur);
+
+      if (Math.abs(target - cur) > 0.0001) {
+        requestAnimationFrame(tick);
+      } else {
+        isTicking = false;
+      }
     }
 
     function init() {
       measure();
       read();
       cur = target;
+      render(cur);
       if (!ready) {
         ready = true;
-        requestAnimationFrame(frame);
         playEntrance();
       }
     }
@@ -1061,10 +1106,14 @@ const teamMembers = [
       read();
     });
 
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(init);
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init, { once: true });
     } else {
       init();
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(measure);
     }
   })();
 </script>

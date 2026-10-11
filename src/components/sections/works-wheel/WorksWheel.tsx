@@ -176,7 +176,7 @@ export function WorksWheel({
       if (hudRef.current) {
         hudRef.current.style.transform = `scale(${stageScale})`;
         hudRef.current.style.opacity = String(stageOpacity);
-        hudRef.current.style.pointerEvents = stageOpacity > 0.1 ? "auto" : "none";
+        hudRef.current.style.pointerEvents = "none";
       }
 
       const m = clamp(t - 1, 0, 1);
@@ -237,11 +237,14 @@ export function WorksWheel({
       }
 
       if (listRef.current) {
-        let listOp = clamp((t - 0.3) * 1.8, 0, 1);
+        let listOp = clamp((t - 1.25) * 2.2, 0, 1);
         if (t > count + 1) {
           listOp = clamp(1 - (t - (count + 1)) * 2, 0, 1);
         }
         listRef.current.style.opacity = String(listOp);
+        listRef.current.style.pointerEvents = listOp > 0.1 ? "auto" : "none";
+        listRef.current.style.visibility = listOp > 0.001 ? "visible" : "hidden";
+        listRef.current.style.zIndex = listOp > 0.001 ? "30" : "-1";
       }
 
       const near = clamp(Math.round(pos), 0, last);
@@ -267,7 +270,6 @@ export function WorksWheel({
         end: () => `+=${window.innerHeight * totalTurns * 0.95}`,
         pin: pinRef.current,
         pinSpacing: true,
-        anticipatePin: 1,
         scrub: 0.6,
         snap: {
           snapTo: snapPoints,
@@ -343,7 +345,7 @@ export function WorksWheel({
           {/* Stage Content Wrapper */}
           <div
             ref={stageContentRef}
-            className="w-full h-full relative [transform-style:preserve-3d] transition-transform duration-75"
+            className="w-full h-full relative [transform-style:preserve-3d]"
             style={{ opacity: 0, transform: "scale(0.55)" }}
           >
             {/* 3D Drum Wheel */}
@@ -416,7 +418,7 @@ export function WorksWheel({
         {/* 2D HUD Overlay: Completely separate layer at z-30, immune to 3D perspective distortion */}
         <div
           ref={hudRef}
-          className="pointer-events-none absolute inset-0 z-30 select-none overflow-hidden transition-transform duration-75"
+          className="pointer-events-none absolute inset-0 z-30 select-none overflow-hidden"
           style={{ opacity: 0, transform: "scale(0.55)" }}
         >
           {/* Center Title at Idle Ring (t <= 1) */}
@@ -490,8 +492,8 @@ export function WorksWheel({
           {/* Top Right Quick Project List Index */}
           <ol
             ref={listRef}
-            className="pointer-events-auto absolute top-[8%] sm:top-[10%] right-6 sm:right-8 md:right-10 lg:right-12 text-right leading-[1.85] font-mono select-none space-y-0.5 max-w-[200px] sm:max-w-[240px] transition-opacity duration-300 opacity-0"
-            style={{ fontSize: metrics.index }}
+            className="pointer-events-none absolute top-[8%] sm:top-[10%] right-6 sm:right-8 md:right-10 lg:right-12 text-right leading-[1.85] font-mono select-none space-y-0.5 max-w-[200px] sm:max-w-[240px] transition-opacity duration-300 opacity-0 -z-10"
+            style={{ fontSize: metrics.index, visibility: "hidden" }}
           >
             {items.map((item, i) => (
               <li key={item.title}>

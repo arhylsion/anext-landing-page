@@ -3,7 +3,6 @@ import MainLayout from '@/layouts/MainLayout.astro';
 import HeroIsland from '@/components/sections/hero/HeroIsland';
 import WorksWheel from '@/components/sections/works-wheel/WorksWheel';
 import Footer from '@/components/sections/footer/Footer.astro';
-import { PrimaryButton } from '@/components/common/primary-button';
 import { PROJECTS } from '@/data/projects';
 ---
 
@@ -64,14 +63,29 @@ import { PROJECTS } from '@/data/projects';
       <p class="text-sm sm:text-base wheel-muted font-mono max-w-md mx-auto mb-8 leading-relaxed">
         Discover how ANEXT can engineer platforms and distributed systems tailored to your scale.
       </p>
-      <PrimaryButton
-        client:load
-        href="/#contact"
-        aria-label="Explore more ANEXT engineering projects and start a discussion"
-        className="min-h-[50px] sm:min-h-[54px] px-8 py-3.5 rounded-[20px] text-base font-semibold shadow-lg"
-      >
-        Explore More Projects
-      </PrimaryButton>
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a
+          href="mailto:hello@anext.dev?subject=Schedule%20a%20Call"
+          class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[var(--color-text)] text-[var(--color-bg)] font-semibold text-xs sm:text-sm tracking-wide transition-all hover:scale-105 shadow-lg"
+        >
+          Schedule a Call
+        </a>
+        <a
+          href="mailto:hello@anext.dev?subject=Project%20Inquiry"
+          class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[var(--color-text)] text-[var(--color-bg)] font-semibold text-xs sm:text-sm tracking-wide transition-all hover:scale-105 shadow-lg"
+        >
+          Send a Message
+        </a>
+      </div>
+      <p class="mt-4 font-mono text-xs sm:text-sm wheel-muted text-center">
+        Or reach out directly at{" "}
+        <a
+          href="mailto:hello@anext.dev"
+          class="text-[var(--color-text)] underline underline-offset-4 hover:opacity-80 transition-opacity font-medium"
+        >
+          hello@anext.dev
+        </a>
+      </p>
       <div class="mt-14 w-12 h-px bg-slate-200 dark:bg-white/10 mb-4"></div>
       <p class="text-xs font-mono wheel-muted uppercase tracking-widest">
         ANEXT Engineering &bull; Architecture & Distributed Systems
@@ -113,32 +127,39 @@ import { PROJECTS } from '@/data/projects';
       if (desc) gsap.set(desc, { opacity: 1, y: 0 });
       if (scroll) gsap.set(scroll, { opacity: 1, y: 0 });
     } else {
-      gsap.set(wEls, { yPercent: 120, rotate: 4, opacity: 0 });
-      if (desc) gsap.set(desc, { opacity: 0, y: 18 });
-      if (scroll) gsap.set(scroll, { opacity: 0, y: 12 });
-
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-      tl.to(wEls, {
-        yPercent: 0,
-        rotate: 0,
-        opacity: 1,
-        duration: 1.1,
-        stagger: 0.08,
-        delay: 0.15,
-      })
-      .to(desc, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-      }, "-=0.6")
-      .to(scroll, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-      }, "-=0.4");
+      tl.fromTo(wEls,
+        { yPercent: 100, rotate: 3, opacity: 0 },
+        {
+          yPercent: 0,
+          rotate: 0,
+          opacity: 1,
+          duration: 1.1,
+          stagger: 0.08,
+          delay: 0.05,
+        }
+      )
+      .fromTo(desc,
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+        },
+        "-=0.6"
+      )
+      .fromTo(scroll,
+        { opacity: 0, y: 12 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out',
+        },
+        "-=0.4"
+      );
     }
   }
 </script>

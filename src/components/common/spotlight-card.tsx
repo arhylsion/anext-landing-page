@@ -57,7 +57,7 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
     >
       <div
         ref={overlayRef}
-        className="pointer-events-none absolute inset-0 transition-opacity duration-120 ease-in-out"
+        className="pointer-events-none absolute inset-0 rounded-[inherit] transition-opacity duration-120 ease-in-out"
         style={{ opacity: 0 }}
       />
       {children}
