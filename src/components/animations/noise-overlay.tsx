@@ -22,25 +22,31 @@ function generateNoiseTile(size: number): Promise<string> {
   });
 }
 
+let cachedTileUrl: string | null = null;
+
 const NoiseOverlay: React.FC<{ opacity?: number }> = ({ opacity = 0.085 }) => {
-  const [tileUrl, setTileUrl] = useState<string | null>(null);
+  const [tileUrl, setTileUrl] = useState<string | null>(cachedTileUrl);
 
   useEffect(() => {
-    let url: string | null = null;
-    let cancelled = false;
+    // Skip on small mobile viewports to preserve main thread CPU and keep LCP instantaneous
+    if (window.innerWidth < 768) {
+      return;
+    }
 
+    if (cachedTileUrl) {
+      setTileUrl(cachedTileUrl);
+      return;
+    }
+
+    let cancelled = false;
     generateNoiseTile(TILE_SIZE).then((blobUrl) => {
-      if (cancelled) {
-        URL.revokeObjectURL(blobUrl);
-        return;
-      }
-      url = blobUrl;
+      if (cancelled) return;
+      cachedTileUrl = blobUrl;
       setTileUrl(blobUrl);
     });
 
     return () => {
       cancelled = true;
-      if (url) URL.revokeObjectURL(url);
     };
   }, []);
 

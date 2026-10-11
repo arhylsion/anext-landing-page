@@ -284,7 +284,7 @@ export function Header({
               </a>
             </div>
 
-            <nav className="lg:flex hidden justify-center font-medium text-sm lg:text-base flex-1">
+            <nav className="md:flex hidden justify-center font-medium text-sm lg:text-base flex-1">
               {menuItems.map((item) => (
                 <div
                   key={item.id}
@@ -322,7 +322,7 @@ export function Header({
                 type="button"
                 aria-label="Toggle navigation menu"
                 aria-expanded={mobileMenuOpen}
-                className="lg:hidden p-1.5 rounded-full border border-white/20 text-white hover:bg-white/10 cursor-pointer"
+                className="md:hidden p-1.5 rounded-full border border-white/20 text-white hover:bg-white/10 cursor-pointer"
                 onClick={() => setMobileMenuOpen((prev) => !prev)}
               >
                 <Menu className="w-4 h-4" />
@@ -403,7 +403,7 @@ export function Header({
                     </div>
 
                     <nav
-                      className={`lg:flex hidden justify-center font-medium text-sm lg:text-base flex-1`}
+                      className={`md:flex hidden justify-center font-medium text-sm lg:text-base flex-1`}
                     >
                       {menuItems.map((item) => (
                         <div
@@ -447,7 +447,7 @@ export function Header({
                       ))}
                     </nav>
 
-                    <div className="lg:flex hidden items-center ml-auto mr-4">
+                    <div className="md:flex hidden items-center ml-auto mr-4">
                       <button
                         onClick={toggleTheme}
                         aria-label="Toggle dark/light theme"
@@ -461,7 +461,7 @@ export function Header({
                       </button>
                     </div>
 
-                    <div className="lg:hidden flex justify-end items-center gap-2">
+                    <div className="md:hidden flex justify-end items-center gap-2">
                       <button
                         onClick={toggleTheme}
                         aria-label="Toggle theme"
@@ -501,7 +501,7 @@ export function Header({
                     </div>
 
                     {menuAction && (
-                      <div className="mr-[-12px] mt-[-12px] mb-[-12px] ml-[12px] lg:flex hidden">
+                      <div className="mr-[-12px] mt-[-12px] mb-[-12px] ml-[12px] md:flex hidden">
                         {menuAction}
                       </div>
                     )}

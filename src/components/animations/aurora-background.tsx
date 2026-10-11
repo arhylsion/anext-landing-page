@@ -202,6 +202,10 @@ export default function Aurora(props: AuroraProps) {
   useEffect(() => {
     const ctn = ctnDom.current;
     if (!ctn || !isVisible) return;
+    if (window.innerWidth < 768) {
+      if (props.onReady) props.onReady();
+      return;
+    }
 
     const renderer = new Renderer({
       alpha: true,

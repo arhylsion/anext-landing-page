@@ -271,7 +271,7 @@ const CardBottomColumns: React.FC<{ items: ProcessCardItem[] }> = ({ items }) =>
             onMouseEnter={() => setActiveItem(idx)}
             className={cn(
               "cursor-pointer flex flex-col justify-between transition-opacity duration-300 select-none",
-              isActive ? "opacity-100" : "opacity-50 hover:opacity-100"
+              isActive ? "opacity-100" : "opacity-75 hover:opacity-100"
             )}
           >
             <div>

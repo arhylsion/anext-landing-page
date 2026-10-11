@@ -152,11 +152,11 @@ export function BrandPartnersCarousel({
                         <span className="w-5 h-5 rounded-full bg-[var(--color-border)] group-hover:bg-[#1E40AF] group-hover:text-white text-[var(--color-text)] flex items-center justify-center text-xs font-bold transition-all">
                           +
                         </span>
-                        <span className="text-xs sm:text-sm font-semibold text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors whitespace-nowrap">
+                        <span className="text-xs sm:text-sm font-semibold text-[var(--color-text)] group-hover:text-[var(--color-text)] transition-colors whitespace-nowrap">
                           Your brand here
                         </span>
                       </div>
-                      <span className="text-[10px] sm:text-xs font-mono text-[var(--color-text-muted)] opacity-85 group-hover:opacity-100 transition-opacity">
+                      <span className="text-[10px] sm:text-xs font-mono text-[var(--color-text-muted)] transition-opacity">
                         Partner with ANEXT
                       </span>
                     </a>
@@ -172,7 +172,7 @@ export function BrandPartnersCarousel({
                         style={{ aspectRatio: "160 / 56" }}
                         className="partner-brand-logo h-10 sm:h-12 md:h-14 w-auto aspect-[160/56] object-contain max-w-[140px] sm:max-w-[160px] opacity-85 group-hover:opacity-100 transition-opacity"
                       />
-                      <span className="text-xs sm:text-sm font-semibold text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors tracking-tight text-center max-w-[160px] sm:max-w-[180px] truncate">
+                      <span className="text-xs sm:text-sm font-semibold text-[var(--color-text)] group-hover:text-[var(--color-text)] transition-colors tracking-tight text-center max-w-[160px] sm:max-w-[180px] truncate">
                         {brand.name}
                       </span>
                     </div>

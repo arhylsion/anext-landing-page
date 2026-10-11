@@ -68,21 +68,33 @@ export function BlurIn({
       : `translate3d(0, ${offset}px, 0)`;
 
   return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        ...style,
-        opacity: isVisible ? 1 : 0,
-        filter: isVisible ? "blur(0px)" : "blur(8px)",
-        transform: isVisible ? "translate3d(0, 0, 0)" : transformStart,
-        transition: `opacity ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, filter ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
-        willChange: isVisible ? "auto" : "opacity, transform, filter",
-      }}
-      {...props}
-    >
-      {children}
-    </div>
+    <>
+      <style>{`
+        @media (max-width: 768px) {
+          .blur-in-container {
+            opacity: 1 !important;
+            filter: none !important;
+            transform: none !important;
+            transition: none !important;
+          }
+        }
+      `}</style>
+      <div
+        ref={ref}
+        className={`blur-in-container ${className}`}
+        style={{
+          ...style,
+          opacity: isVisible ? 1 : 0,
+          filter: isVisible ? "blur(0px)" : "blur(8px)",
+          transform: isVisible ? "translate3d(0, 0, 0)" : transformStart,
+          transition: `opacity ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, filter ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
+          willChange: isVisible ? "auto" : "opacity, transform, filter",
+        }}
+        {...props}
+      >
+        {children}
+      </div>
+    </>
   );
 }
 

@@ -23,6 +23,14 @@ export function WordByWord({ children }: { children: string }) {
           opacity: 0;
           animation: wordBlurIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+        @media (max-width: 768px) {
+          .hero-word {
+            opacity: 1 !important;
+            filter: none !important;
+            transform: none !important;
+            animation: none !important;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
           .hero-word {
             opacity: 1 !important;

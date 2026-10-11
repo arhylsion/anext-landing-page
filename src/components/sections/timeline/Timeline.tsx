@@ -216,11 +216,13 @@ export default function Timeline({
     <section
       ref={sectionRef}
       id="about"
+      aria-label="Our Journey and Company Milestones"
       className={cn(
         "relative w-full bg-[var(--color-bg)] text-[var(--color-text)] overflow-hidden",
         className
       )}
     >
+      <h2 className="sr-only">Our Journey and Company Milestones</h2>
       <span id="journey" className="absolute -top-24" />
 
       <div className="h-screen w-full flex items-center overflow-hidden py-8">
@@ -300,12 +302,12 @@ export default function Timeline({
                             }}
                             className="pl-6 space-y-2"
                           >
-                            <h4 className="font-sans font-bold text-xl sm:text-2xl md:text-3xl tracking-tight text-[var(--color-text)]">
+                            <h3 className="font-sans font-bold text-xl sm:text-2xl md:text-3xl tracking-tight text-[var(--color-text)]">
                               {item.year}{" "}
-                              <span className="font-mono text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
+                              <span className="font-mono text-xs sm:text-sm font-medium text-[var(--color-text-muted)]">
                                 {item.month}
                               </span>
-                            </h4>
+                            </h3>
                             <p className="font-mono text-xs sm:text-sm text-[var(--color-text)] leading-relaxed font-normal">
                               {item.content}
                             </p>
@@ -338,12 +340,12 @@ export default function Timeline({
                             }}
                             className="pl-6 space-y-2"
                           >
-                            <h4 className="font-sans font-bold text-xl sm:text-2xl md:text-3xl tracking-tight text-[var(--color-text)]">
+                            <h3 className="font-sans font-bold text-xl sm:text-2xl md:text-3xl tracking-tight text-[var(--color-text)]">
                               {item.year}{" "}
-                              <span className="font-mono text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
+                              <span className="font-mono text-xs sm:text-sm font-medium text-[var(--color-text-muted)]">
                                 {item.month}
                               </span>
-                            </h4>
+                            </h3>
                             <p className="font-mono text-xs sm:text-sm text-[var(--color-text)] leading-relaxed font-normal">
                               {item.content}
                             </p>

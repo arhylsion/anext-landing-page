@@ -4,7 +4,7 @@ const REDUCED = () =>
 
 export function initGlobalReveals() {
   if (typeof window === 'undefined') return;
-  const isReduced = REDUCED();
+  const isReduced = REDUCED() || window.innerWidth < 768;
 
   const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
   if (!els.length) return;

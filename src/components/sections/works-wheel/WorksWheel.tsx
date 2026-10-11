@@ -386,10 +386,10 @@ export function WorksWheel({
                         />
 
                         {action && item.href ? (
-                          <span className="bg-white/90 dark:bg-black/80 hover:bg-white dark:hover:bg-black/95 text-slate-900 dark:text-white border border-slate-200 dark:border-white/20 pointer-events-none absolute right-3 bottom-3 flex translate-y-1 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-mono opacity-0 backdrop-blur-md transition group-hover:translate-y-0 group-hover:opacity-100 shadow-md dark:shadow-xl">
+                          <span className="bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border)] pointer-events-none absolute right-3 bottom-3 flex translate-y-1 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-mono opacity-0 backdrop-blur-md transition group-hover:translate-y-0 group-hover:opacity-100 shadow-md">
                             <svg
                               viewBox="0 0 12 12"
-                              className="size-2.5 text-slate-900 dark:text-white"
+                              className="size-2.5 text-[var(--color-text)]"
                               aria-hidden="true"
                             >
                               <path
