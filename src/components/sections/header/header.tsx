@@ -11,7 +11,6 @@ import { TransparentButton } from "../../common/transparent-button";
 import { MobileMenu } from "./mobile-menu";
 import { SectionSubheading } from "../../common/section-subheading";
 import { ShineText } from "../../common/shine-text";
-import SpotlightCard from "../../common/spotlight-card";
 import LazyRender from "../../common/lazy-render";
 import classes from "./header.module.css";
 
@@ -268,24 +267,33 @@ export function Header({
   if (variant === "menu") {
     return (
       <header className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-5 sm:pt-7 z-50 relative">
-        <SpotlightCard className="rounded-[20px] sm:rounded-[32px]">
+        <div
+          className="relative isolate flex items-center px-5 py-3.5 sm:p-5 rounded-[20px] sm:rounded-[32px] justify-between text-white border border-white/15 shadow-2xl overflow-hidden"
+        >
           <div
-            className="flex items-center px-5 py-3.5 sm:p-5 bg-white/10 dark:bg-black/60 backdrop-blur-xl shadow-2xl sm:rounded-[32px] rounded-[20px] justify-between text-white transition-all duration-300 border-0 outline-none"
-          >
-            <div className="flex justify-start">
-              <a href="/" className="flex items-center gap-3 group" aria-label="Home">
-                <img
-                  src="/images/anext-logo-only.webp"
-                  alt="ANEXT Logo"
-                  width="40"
-                  height="40"
-                  className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                />
-              </a>
-            </div>
+            aria-hidden="true"
+            className="absolute inset-0 rounded-[inherit] bg-[#0a0f1d]/85 dark:bg-black/60 backdrop-blur-2xl pointer-events-none -z-10"
+          />
 
-            <nav className="md:flex hidden justify-center font-medium text-sm lg:text-base flex-1">
-              {menuItems.map((item) => (
+          <div className="flex justify-start">
+            <a href="/" className="flex items-center gap-3 group" aria-label="Home">
+              <img
+                src="/images/anext-logo-only.webp"
+                alt="ANEXT Logo"
+                width="40"
+                height="40"
+                className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+            </a>
+          </div>
+
+          <nav className="md:flex hidden justify-center font-medium text-sm lg:text-base flex-1">
+            {menuItems.map((item) => {
+              const isHovered = item === hoveringTarget;
+              const isAnyHovered = hoveringTarget !== null;
+              const isBlurred = isAnyHovered && !isHovered;
+
+              return (
                 <div
                   key={item.id}
                   onMouseEnter={(e) => onMenuItemMouseEnter(item, e)}
@@ -294,42 +302,44 @@ export function Header({
                 >
                   <a
                     href={item.href}
-                    className={
-                      item === hoveringTarget || hoveringTarget === null
-                        ? "text-white duration-300 font-medium"
-                        : "text-white/30 blur-[1.5px] duration-300"
-                    }
+                    className={`transition-all duration-300 font-medium ${
+                      isHovered
+                        ? "text-white"
+                        : isBlurred
+                          ? "text-white/30 blur-[1.5px]"
+                          : "text-white hover:text-white"
+                    }`}
                   >
-                    {item === hoveringTarget ? (
+                    {isHovered ? (
                       <ShineText className="inline text-white">{item.label}</ShineText>
                     ) : (
                       item.label
                     )}
                   </a>
                 </div>
-              ))}
-            </nav>
+              );
+            })}
+          </nav>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={toggleTheme}
-                aria-label="Toggle dark/light theme"
-                className="p-1.5 rounded-full border border-white/20 hover:bg-white/10 text-white transition-colors cursor-pointer"
-              >
-                {isLight ? <Moon className="w-3.5 h-3.5 text-white" /> : <Sun className="w-3.5 h-3.5 text-amber-300" />}
-              </button>
-              <button
-                type="button"
-                aria-label="Toggle navigation menu"
-                aria-expanded={mobileMenuOpen}
-                className="md:hidden p-1.5 rounded-full border border-white/20 text-white hover:bg-white/10 cursor-pointer"
-                onClick={() => setMobileMenuOpen((prev) => !prev)}
-              >
-                <Menu className="w-4 h-4" />
-              </button>
-            </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle dark/light theme"
+              className="p-1.5 rounded-full border border-white/20 hover:bg-white/10 text-white transition-colors cursor-pointer"
+            >
+              {isLight ? <Moon className="w-3.5 h-3.5 text-white" /> : <Sun className="w-3.5 h-3.5 text-amber-300" />}
+            </button>
+            <button
+              type="button"
+              aria-label="Toggle navigation menu"
+              aria-expanded={mobileMenuOpen}
+              className="md:hidden p-1.5 rounded-full border border-white/20 text-white hover:bg-white/10 cursor-pointer"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+            >
+              <Menu className="w-4 h-4" />
+            </button>
           </div>
-        </SpotlightCard>
+        </div>
 
         <MobileMenu
           open={mobileMenuOpen}
@@ -376,140 +386,148 @@ export function Header({
         <div
           className={`container relative z-10 transition-opacity duration-500 px-3 sm:px-6 xl:px-12`}
         >
-          <BlurIn delay={0.1}>
-            <div className="sm:rounded-[32px] rounded-[20px] xl:mt-12 lg:mt-10 md:mt-8 mt-7 sm:mt-8 relative overflow-hidden">
-              {/* DEFAULT STATE */}
-              <div
-                className={`transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                  isScrolled
-                    ? "opacity-0 -translate-y-4 scale-[0.98] pointer-events-none"
-                    : "opacity-100 translate-y-0 scale-100 pointer-events-auto"
+          <div className="sm:rounded-[32px] rounded-[20px] xl:mt-12 lg:mt-10 md:mt-8 mt-7 sm:mt-8 relative overflow-hidden">
+            {/* DEFAULT STATE */}
+            <div
+              className={`transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled
+                  ? "opacity-0 -translate-y-4 scale-[0.98] pointer-events-none"
+                  : "opacity-100 translate-y-0 scale-100 pointer-events-auto"
                 }`}
+            >
+              <div
+                className="relative isolate flex items-center px-5 py-3.5 sm:p-5 rounded-[20px] sm:rounded-[32px] justify-between text-white border border-white/20 shadow-2xl overflow-hidden"
               >
-                <SpotlightCard>
-                  <div
-                    className={`${classes.navPanel} flex items-center px-5 py-3.5 sm:p-5 bg-white/10 dark:bg-black/50 backdrop-blur-xl border border-white/20 shadow-2xl sm:rounded-[32px] rounded-[20px] justify-between text-white transition-all duration-300`}
-                  >
-                    <div className="flex justify-start">
-                      <a href="/" className="flex items-center gap-3 group">
-                        <img
-                          src="/images/anext-logo-only.webp"
-                          alt="ANEXT Logo"
-                          width="40"
-                          height="40"
-                          className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                        />
-                      </a>
-                    </div>
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-[inherit] bg-black/75 dark:bg-black/50 backdrop-blur-2xl pointer-events-none -z-10"
+                />
 
-                    <nav
-                      className={`md:flex hidden justify-center font-medium text-sm lg:text-base flex-1`}
-                    >
-                      {menuItems.map((item) => (
-                        <div
-                          key={item.id}
-                          onMouseEnter={(e) => onMenuItemMouseEnter(item, e)}
-                          onMouseLeave={(e) => onMenuItemMouseLeave(item, e)}
-                          className={`px-4 menu-item ${
-                            item.children ? "menu-item--children" : ""
+                <div className="flex justify-start">
+                  <a href="/" className="flex items-center gap-3 group">
+                    <img
+                      src="/images/anext-logo-only.webp"
+                      alt="ANEXT Logo"
+                      width="40"
+                      height="40"
+                      className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </a>
+                </div>
+
+                <nav
+                  className={`md:flex hidden justify-center font-medium text-sm lg:text-base flex-1`}
+                >
+                  {menuItems.map((item) => {
+                    const isHovered = item === hoveringTarget;
+                    const isAnyHovered = hoveringTarget !== null;
+                    const isBlurred = isAnyHovered && !isHovered;
+
+                    return (
+                      <div
+                        key={item.id}
+                        onMouseEnter={(e) => onMenuItemMouseEnter(item, e)}
+                        onMouseLeave={(e) => onMenuItemMouseLeave(item, e)}
+                        className={`px-4 menu-item ${
+                          item.children ? "menu-item--children" : ""
+                        }`}
+                      >
+                        <a
+                          href={item.href}
+                          className={`transition-all duration-300 font-medium ${
+                            isHovered
+                              ? "text-white"
+                              : isBlurred
+                                ? "text-white/30 blur-[1.5px]"
+                                : "text-white hover:text-white"
                           }`}
                         >
-                          <a
-                            href={item.href}
-                            className={
-                              item === hoveringTarget || hoveringTarget === null
-                                ? "text-white duration-300 font-medium"
-                                : "text-white/30 blur-[1.5px] duration-300"
-                            }
-                          >
-                            {item === hoveringTarget ? (
-                              <ShineText className="inline text-white">
-                                {item.label}
-                              </ShineText>
-                            ) : (
-                              item.label
-                            )}
-                          </a>
-                          {item.children && (
-                            <span
-                              className={`pl-2 ${
-                                item === hoveringTarget
-                                  ? "opacity-90 cursor-pointer text-white"
-                                  : hoveringTarget === null
-                                    ? "opacity-60 text-white"
-                                    : "opacity-30 blur-[1px] text-white"
-                              } transition-opacity duration-300`}
-                            >
-                              <ChevronDown className="inline-block w-4 h-4 transition-opacity duration-300" />
-                            </span>
+                          {isHovered ? (
+                            <ShineText className="inline text-white">
+                              {item.label}
+                            </ShineText>
+                          ) : (
+                            item.label
                           )}
-                        </div>
-                      ))}
-                    </nav>
-
-                    <div className="md:flex hidden items-center ml-auto mr-4">
-                      <button
-                        onClick={toggleTheme}
-                        aria-label="Toggle dark/light theme"
-                        className="p-1.5 ml-1 rounded-full border border-white/20 hover:bg-white/10 text-white transition-colors cursor-pointer"
-                      >
-                        {isLight ? (
-                          <Moon className="w-3.5 h-3.5 text-white" />
-                        ) : (
-                          <Sun className="w-3.5 h-3.5 text-amber-300" />
+                        </a>
+                        {item.children && (
+                          <span
+                            className={`pl-2 transition-opacity duration-200 ${
+                              isHovered
+                                ? "opacity-90 cursor-pointer text-white"
+                                : !isAnyHovered
+                                  ? "opacity-60 text-white"
+                                  : "opacity-40 text-white"
+                            }`}
+                          >
+                            <ChevronDown className="inline-block w-4 h-4" />
+                          </span>
                         )}
-                      </button>
-                    </div>
-
-                    <div className="md:hidden flex justify-end items-center gap-2">
-                      <button
-                        onClick={toggleTheme}
-                        aria-label="Toggle theme"
-                        className="p-1.5 rounded-full border border-white/20 text-white transition-colors cursor-pointer mr-1"
-                      >
-                        {isLight ? (
-                          <Moon className="w-3.5 h-3.5 text-white" />
-                        ) : (
-                          <Sun className="w-3.5 h-3.5 text-amber-300" />
-                        )}
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Toggle navigation menu"
-                        aria-expanded={mobileMenuOpen}
-                        className={`${classes.mobileMenu} relative w-6 h-5 cursor-pointer bg-transparent border-0 p-0 focus:outline-hidden`}
-                        onClick={() => {
-                          setMobileMenuOpen((prev) => !prev);
-                        }}
-                      >
-                        <div
-                          className={`${classes.mobileMenuLine} absolute top-1/2 left-0 right-0 w-full h-[2px] bg-white rounded transition-transform duration-300`}
-                        >
-                          <div
-                            className={`${classes.mobileMenuLineBefore} absolute top-[-8px] left-0 right-0 w-full h-[2px] bg-white rounded transition-transform duration-300`}
-                          ></div>
-                          <div
-                            className={`${classes.mobileMenuLineAfter} absolute top-[8px] left-0 right-0 w-full h-[2px] bg-white rounded transition-transform duration-300`}
-                          ></div>
-                        </div>
-                      </button>
-                      {menuAction && (
-                        <div className="mr-[-12px] mt-[-12px] mb-[-12px] ml-[24px]">
-                          {menuAction}
-                        </div>
-                      )}
-                    </div>
-
-                    {menuAction && (
-                      <div className="mr-[-12px] mt-[-12px] mb-[-12px] ml-[12px] md:flex hidden">
-                        {menuAction}
                       </div>
+                    );
+                  })}
+                </nav>
+
+                <div className="md:flex hidden items-center ml-auto mr-4">
+                  <button
+                    onClick={toggleTheme}
+                    aria-label="Toggle dark/light theme"
+                    className="p-1.5 ml-1 rounded-full border border-white/20 hover:bg-white/10 text-white transition-colors cursor-pointer"
+                  >
+                    {isLight ? (
+                      <Moon className="w-3.5 h-3.5 text-white" />
+                    ) : (
+                      <Sun className="w-3.5 h-3.5 text-amber-300" />
                     )}
+                  </button>
+                </div>
+
+                <div className="md:hidden flex justify-end items-center gap-2">
+                  <button
+                    onClick={toggleTheme}
+                    aria-label="Toggle theme"
+                    className="p-1.5 rounded-full border border-white/20 text-white transition-colors cursor-pointer mr-1"
+                  >
+                    {isLight ? (
+                      <Moon className="w-3.5 h-3.5 text-white" />
+                    ) : (
+                      <Sun className="w-3.5 h-3.5 text-amber-300" />
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Toggle navigation menu"
+                    aria-expanded={mobileMenuOpen}
+                    className={`${classes.mobileMenu} relative w-6 h-5 cursor-pointer bg-transparent border-0 p-0 focus:outline-hidden`}
+                    onClick={() => {
+                      setMobileMenuOpen((prev) => !prev);
+                    }}
+                  >
+                    <div
+                      className={`${classes.mobileMenuLine} absolute top-1/2 left-0 right-0 w-full h-[2px] bg-white rounded transition-transform duration-300`}
+                    >
+                      <div
+                        className={`${classes.mobileMenuLineBefore} absolute top-[-8px] left-0 right-0 w-full h-[2px] bg-white rounded transition-transform duration-300`}
+                      ></div>
+                      <div
+                        className={`${classes.mobileMenuLineAfter} absolute top-[8px] left-0 right-0 w-full h-[2px] bg-white rounded transition-transform duration-300`}
+                      ></div>
+                    </div>
+                  </button>
+                  {menuAction && (
+                    <div className="mr-[-12px] mt-[-12px] mb-[-12px] ml-[24px]">
+                      {menuAction}
+                    </div>
+                  )}
+                </div>
+
+                {menuAction && (
+                  <div className="mr-[-12px] mt-[-12px] mb-[-12px] ml-[12px] md:flex hidden">
+                    {menuAction}
                   </div>
-                </SpotlightCard>
+                )}
               </div>
             </div>
-          </BlurIn>
+          </div>
 
           {/* SCROLLED STATE */}
           {mounted &&
@@ -553,19 +571,16 @@ export function Header({
                           setIsCapsuleHovered(true);
                         }
                       }}
-                      className={`pointer-events-auto relative flex items-center justify-between rounded-full backdrop-blur-2xl transition-colors duration-300 ${
-                        isLight
+                      className={`pointer-events-auto relative flex items-center justify-between rounded-full backdrop-blur-2xl transition-colors duration-300 ${isLight
                           ? "bg-[#0a0f1d]/95 text-white border border-white/20 shadow-[0_20px_45px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.1)]"
                           : "bg-white/95 text-slate-900 border border-slate-200/90 shadow-[0_20px_45px_rgba(0,0,0,0.35),0_0_0_1px_rgba(255,255,255,0.8)]"
-                      } ${
-                        !isCapsuleHovered && !mobileMenuOpen
-                          ? `px-5 py-2.5 cursor-pointer hover:scale-[1.03] select-none ${
-                              isLight
-                                ? "hover:border-white/40 shadow-[0_20px_45px_rgba(0,0,0,0.5)]"
-                                : "hover:border-slate-300 shadow-[0_20px_45px_rgba(0,0,0,0.4)]"
-                            }`
+                        } ${!isCapsuleHovered && !mobileMenuOpen
+                          ? `px-5 py-2.5 cursor-pointer hover:scale-[1.03] select-none ${isLight
+                            ? "hover:border-white/40 shadow-[0_20px_45px_rgba(0,0,0,0.5)]"
+                            : "hover:border-slate-300 shadow-[0_20px_45px_rgba(0,0,0,0.4)]"
+                          }`
                           : "px-5 sm:px-7 py-2.5 gap-6 sm:gap-8 w-auto max-w-[94vw]"
-                      }`}
+                        }`}
                     >
                       <AnimatePresence mode="wait" initial={false}>
                         {!isCapsuleHovered && !mobileMenuOpen ? (
@@ -586,9 +601,8 @@ export function Header({
                               className="h-6 w-auto object-contain"
                             />
                             <span
-                              className={`font-sans font-bold text-sm tracking-tight ${
-                                isLight ? "text-white" : "text-slate-950"
-                              }`}
+                              className={`font-sans font-bold text-sm tracking-tight ${isLight ? "text-white" : "text-slate-950"
+                                }`}
                             >
                               ANEXT
                             </span>
@@ -633,13 +647,12 @@ export function Header({
                                       onMouseLeave={() =>
                                         setHoveringTarget(null)
                                       }
-                                      className={`transition-all duration-300 ${
-                                        !isAnyHovered
+                                      className={`transition-all duration-300 ${!isAnyHovered
                                           ? "text-white/80 hover:text-white"
                                           : isHovered
                                             ? "text-white font-medium scale-105"
                                             : "text-white/30 blur-[1.5px] scale-95"
-                                      }`}
+                                        }`}
                                     >
                                       {isHovered ? (
                                         <ShineText className="inline text-white">
@@ -661,13 +674,12 @@ export function Header({
                                       onMouseLeave={() =>
                                         setHoveringTarget(null)
                                       }
-                                      className={`transition-all duration-300 ${
-                                        !isAnyHovered
+                                      className={`transition-all duration-300 ${!isAnyHovered
                                           ? "text-slate-700 hover:text-slate-950 font-medium"
                                           : isHovered
                                             ? "text-slate-950 font-bold scale-105"
                                             : "text-slate-400/40 blur-[1.5px] scale-95"
-                                      }`}
+                                        }`}
                                     >
                                       {item.label}
                                     </a>
@@ -684,11 +696,10 @@ export function Header({
                                   toggleTheme();
                                 }}
                                 aria-label="Toggle theme"
-                                className={`p-1.5 rounded-full border transition-colors cursor-pointer ${
-                                  isLight
+                                className={`p-1.5 rounded-full border transition-colors cursor-pointer ${isLight
                                     ? "border-white/20 bg-white/10 hover:bg-white/20 text-white"
                                     : "border-slate-200/90 bg-slate-100/90 hover:bg-slate-200 text-slate-800"
-                                }`}
+                                  }`}
                               >
                                 {isLight ? (
                                   <Moon className="w-3.5 h-3.5 text-white fill-white/20" />
@@ -704,11 +715,10 @@ export function Header({
                                   setMobileMenuOpen((prev) => !prev);
                                 }}
                                 aria-label="Open mobile menu"
-                                className={`sm:hidden p-1.5 rounded-full border transition-colors cursor-pointer ${
-                                  isLight
+                                className={`sm:hidden p-1.5 rounded-full border transition-colors cursor-pointer ${isLight
                                     ? "border-white/20 bg-white/10 hover:bg-white/20 text-white"
                                     : "border-slate-200/90 bg-slate-100/90 hover:bg-slate-200 text-slate-800"
-                                }`}
+                                  }`}
                               >
                                 <Menu className="w-3.5 h-3.5" />
                               </button>

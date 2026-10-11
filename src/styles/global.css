@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 
 @theme {
   --breakpoint-2xl: 1920px;
@@ -356,3 +358,4 @@ html.light .wheel-quick-item.active {
 html.light .wheel-quick-item:hover {
   color: #090d16 !important;
 }
+

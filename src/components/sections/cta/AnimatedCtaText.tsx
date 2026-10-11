@@ -197,14 +197,29 @@ const AnimatedCtaText: React.FC<AnimatedCtaTextProps> = ({
             {subtext}
           </p>
 
-          <div className="mt-8 flex items-center gap-4">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <a
-              href="/teams"
+              href="mailto:hello@anext.dev?subject=Schedule%20a%20Call"
               className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[var(--color-text)] text-[var(--color-bg)] font-semibold text-xs sm:text-sm tracking-wide transition-all hover:scale-105 shadow-lg"
             >
-              Talk to our Engineers &rarr;
+              Schedule a Call
+            </a>
+            <a
+              href="mailto:hello@anext.dev?subject=Project%20Inquiry"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[var(--color-text)] text-[var(--color-bg)] font-semibold text-xs sm:text-sm tracking-wide transition-all hover:scale-105 shadow-lg"
+            >
+              Send a Message
             </a>
           </div>
+          <p className="mt-4 font-mono text-xs sm:text-sm text-[var(--color-text-muted)] text-center">
+            Or reach out directly at{" "}
+            <a
+              href="mailto:hello@anext.dev"
+              className="text-[var(--color-text)] underline underline-offset-4 hover:opacity-80 transition-opacity font-medium"
+            >
+              hello@anext.dev
+            </a>
+          </p>
         </motion.div>
       </div>
     </section>

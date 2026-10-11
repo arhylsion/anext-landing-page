@@ -267,7 +267,6 @@ export function WorksWheel({
         end: () => `+=${window.innerHeight * totalTurns * 0.95}`,
         pin: pinRef.current,
         pinSpacing: true,
-        anticipatePin: 1,
         scrub: 0.6,
         snap: {
           snapTo: snapPoints,
@@ -343,7 +342,7 @@ export function WorksWheel({
           {/* Stage Content Wrapper */}
           <div
             ref={stageContentRef}
-            className="w-full h-full relative [transform-style:preserve-3d] transition-transform duration-75"
+            className="w-full h-full relative [transform-style:preserve-3d]"
             style={{ opacity: 0, transform: "scale(0.55)" }}
           >
             {/* 3D Drum Wheel */}
@@ -416,7 +415,7 @@ export function WorksWheel({
         {/* 2D HUD Overlay: Completely separate layer at z-30, immune to 3D perspective distortion */}
         <div
           ref={hudRef}
-          className="pointer-events-none absolute inset-0 z-30 select-none overflow-hidden transition-transform duration-75"
+          className="pointer-events-none absolute inset-0 z-30 select-none overflow-hidden"
           style={{ opacity: 0, transform: "scale(0.55)" }}
         >
           {/* Center Title at Idle Ring (t <= 1) */}
