@@ -14,14 +14,14 @@ import { PROJECTS } from '../data/projects';
   <main id="main-content" class="w-full relative overflow-x-hidden transition-colors duration-300">
     <HeroIsland client:load variant="menu" floating={false} />
 
-    <section class="min-h-[75vh] sm:min-h-[80vh] flex flex-col items-center justify-center text-center px-4 pt-12 pb-16 relative z-10">
-      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight wheel-title mb-3">
+    <section class="min-h-[75vh] sm:min-h-[80vh] flex flex-col items-center justify-center text-center px-4 pt-12 pb-16 relative z-10" id="projects-hero">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight wheel-title mb-3" id="projects-title">
         Our Projects
       </h1>
-      <p class="text-sm sm:text-base wheel-muted font-mono max-w-lg mx-auto">
+      <p class="text-sm sm:text-base wheel-muted font-mono max-w-lg mx-auto" id="projects-desc">
         We build systems that grow with you.
       </p>
-      <div class="mt-8 text-xs font-mono wheel-muted flex items-center gap-2 select-none">
+      <div class="mt-8 text-xs font-mono wheel-muted flex items-center gap-2 select-none" id="projects-scroll">
         <span>Scroll down to explore</span>
         <span class="animate-bounce">↓</span>
       </div>
@@ -61,3 +61,67 @@ import { PROJECTS } from '../data/projects';
 
   <Footer />
 </MainLayout>
+
+<style>
+  :global(#projects-title .m) {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+  :global(#projects-title .w) {
+    display: inline-block;
+    transform-origin: 0% 100%;
+    will-change: transform, opacity;
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  const title = document.getElementById('projects-title');
+  const desc = document.getElementById('projects-desc');
+  const scroll = document.getElementById('projects-scroll');
+
+  if (title) {
+    const words = title.textContent?.trim().split(/\s+/) || [];
+    title.innerHTML = words.map(w => `<span class="m"><span class="w">${w}</span></span>`).join(" ");
+
+    const wEls = Array.from(title.querySelectorAll<HTMLElement>(".w"));
+    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (isReduced) {
+      gsap.set(wEls, { yPercent: 0, opacity: 1 });
+      if (desc) gsap.set(desc, { opacity: 1, y: 0 });
+      if (scroll) gsap.set(scroll, { opacity: 1, y: 0 });
+    } else {
+      gsap.set(wEls, { yPercent: 120, rotate: 4, opacity: 0 });
+      if (desc) gsap.set(desc, { opacity: 0, y: 18 });
+      if (scroll) gsap.set(scroll, { opacity: 0, y: 12 });
+
+      const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+      tl.to(wEls, {
+        yPercent: 0,
+        rotate: 0,
+        opacity: 1,
+        duration: 1.1,
+        stagger: 0.08,
+        delay: 0.15,
+      })
+      .to(desc, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+      }, "-=0.6")
+      .to(scroll, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+      }, "-=0.4");
+    }
+  }
+</script>

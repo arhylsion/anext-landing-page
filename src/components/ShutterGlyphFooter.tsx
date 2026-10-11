@@ -492,15 +492,15 @@ export const DEFAULT_COLUMNS: FooterColumn[] = [
   {
     title: "Products",
     links: [
-      { label: "Services", href: "#services" },
-      { label: "Technology", href: "#technologies" },
-      { label: "Case Studies", href: "#services" },
+      { label: "Services", href: "#/services" },
+      { label: "Technology", href: "/#technologies" },
+      { label: "Case Studies", href: "/#services" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About", href: "#what-is-anext" },
+      { label: "About", href: "/#what-is-anext" },
       { label: "Blog", href: "#" },
       { label: "Careers", href: "/teams" },
     ],

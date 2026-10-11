@@ -338,13 +338,14 @@ const teamMembers = [
     display: inline-block;
     overflow: hidden;
     vertical-align: top;
-    padding-bottom: 0.08em;
-    margin-bottom: -0.08em;
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
   }
 
   :global(.title .w) {
     display: inline-block;
-    will-change: transform;
+    transform-origin: 0% 100%;
+    will-change: transform, opacity;
   }
 
   .side p {
@@ -734,6 +735,8 @@ const teamMembers = [
 </style>
 
 <script>
+  import gsap from 'gsap';
+
   (function() {
     const $ = (id: string) => document.getElementById(id);
     const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -773,6 +776,7 @@ const teamMembers = [
     const cardButtons = Array.from(track.querySelectorAll<HTMLButtonElement>(".card"));
     const whoEls = Array.from(who.querySelectorAll<HTMLElement>("div"));
     const statEls = Array.from(stats.querySelectorAll<HTMLElement>("strong[data-to]"));
+    const statCards = Array.from(stats.children) as HTMLElement[];
 
     const cardData = cardButtons.map((b) => {
       const b1 = b.querySelector<HTMLElement>(".b1");
@@ -821,7 +825,6 @@ const teamMembers = [
 
     let target = 0;
     let cur = 0;
-    let enter = 0;
     let active = -1;
     let hue = 228;
     let hueT = 228;
@@ -831,7 +834,6 @@ const teamMembers = [
       if (!section) return;
       const r = section.getBoundingClientRect();
       target = clamp(-r.top / (r.height - vh));
-      enter = clamp(1 - r.top / vh);
     }
 
     function goTo(i: number) {
@@ -880,44 +882,100 @@ const teamMembers = [
       stageEl.style.setProperty("--hue", h.toFixed(1));
     }
 
+    // GSAP First-Load Word Show Entrance Animation
+    const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function playEntrance() {
+      if (isReduced) {
+        gsap.set(wEls, { yPercent: 0, opacity: 1, rotate: 0 });
+        gsap.set([eyebrow, lede, stats], { opacity: 1, y: 0 });
+        statEls.forEach((el) => {
+          el.textContent = (el.dataset.to || "0") + (el.dataset.suf || "");
+        });
+        return;
+      }
+
+      // Initial hidden states
+      gsap.set(wEls, { yPercent: 125, rotate: 4, opacity: 0 });
+      gsap.set(eyebrow, { opacity: 0, x: -24 });
+      gsap.set(lede, { opacity: 0, y: 22 });
+      gsap.set(statCards, { opacity: 0, y: 28 });
+      gsap.set(hud, { opacity: 0, y: 16 });
+      gsap.set(hint, { opacity: 0 });
+
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+      tl.to(eyebrow, {
+        opacity: 1,
+        x: 0,
+        duration: 0.8,
+        ease: "power3.out",
+      }, 0.1)
+      .to(wEls, {
+        yPercent: 0,
+        rotate: 0,
+        opacity: 1,
+        duration: 1.15,
+        stagger: 0.045,
+        ease: "power4.out",
+      }, 0.18)
+      .to(lede, {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power3.out",
+      }, 0.5)
+      .to(statCards, {
+        opacity: 1,
+        y: 0,
+        duration: 0.85,
+        stagger: 0.08,
+        ease: "power3.out",
+      }, 0.55)
+      .to([hud, hint], {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power3.out",
+      }, 0.85);
+
+      // Dynamic count-up for numbers
+      statEls.forEach((el, i) => {
+        const toNum = parseFloat(el.dataset.to || "0");
+        const suf = el.dataset.suf || "";
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: toNum,
+          duration: 1.6,
+          delay: 0.7 + i * 0.1,
+          ease: "power2.out",
+          onUpdate: () => {
+            el.textContent = Math.round(obj.val) + suf;
+          },
+        });
+      });
+
+      // Ambient Aurora glow bloom
+      gsap.fromTo(glow, 
+        { scale: 0.7, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1.8, ease: "power2.out" }
+      );
+    }
+
     function frame() {
-      cur += (target - cur) * 0.085;
+      cur += (target - cur) * 0.12;
       if (Math.abs(target - cur) < 0.00004) cur = target;
       const p = cur;
-      const e = ease(enter);
 
-      /* ENTRANCE */
-      eyebrow.style.setProperty("--e", String(clamp(enter * 2.2 - 0.1)));
-      wEls.forEach((w, i) => {
-        const k = ease(clamp(enter * 1.9 - i * 0.09));
-        w.style.transform = `translateY(${(1 - k) * 115}%) rotate(${(1 - k) * 5}deg)`;
-      });
-      const kl = ease(clamp(enter * 1.8 - 0.55));
-      lede.style.opacity = String(kl);
-      lede.style.transform = `translateY(${(1 - kl) * 24}px)`;
-      stats.style.opacity = String(clamp(enter * 3 - 1.2));
-      statEls.forEach((el, i) => {
-        const k = ease(clamp(enter * 1.7 - 0.7 - i * 0.08));
-        const toNum = parseFloat(el.dataset.to || "0");
-        el.textContent = Math.round(toNum * k) + (el.dataset.suf || "");
-      });
-      Array.from(stats.children).forEach((s, i) => {
-        const k = ease(clamp(enter * 1.8 - 0.6 - i * 0.08));
-        (s as HTMLElement).style.transform = `translateY(${(1 - k) * 30}px)`;
-      });
       glow.style.setProperty("--gx", `${70 - p * 40}%`);
       glow.style.setProperty("--gy", `${40 + Math.sin(p * 6) * 18}%`);
-      glow.style.transform = `scale(${0.9 + e * 0.1 + p * 0.25})`;
 
-      /* IN-PROGRESS */
+      /* IN-PROGRESS (Intro slides out & fades as scroll enters the cards) */
       const io = inout(clamp((p - 0.015) / (RS - 0.015 + 0.05)));
       intro.style.opacity = String(1 - io);
       intro.style.transform = `translate3d(0, ${-io * 14}vh, 0) scale(${1 - io * 0.06})`;
       intro.style.pointerEvents = io > 0.9 ? "none" : "auto";
       intro.style.visibility = io >= 1 ? "hidden" : "visible";
-      wEls.forEach((w, i) => {
-        if (io > 0) w.style.transform = `translateY(${-io * (30 + i * 6)}%)`;
-      });
 
       const rp = clamp((p - RS) / (RE - RS));
       const x = xForRail(rp);
@@ -989,9 +1047,14 @@ const teamMembers = [
       if (!ready) {
         ready = true;
         requestAnimationFrame(frame);
+        playEntrance();
       }
     }
 
+    const lenis = (window as any).lenis;
+    if (lenis && typeof lenis.on === "function") {
+      lenis.on("scroll", read);
+    }
     window.addEventListener("scroll", read, { passive: true });
     window.addEventListener("resize", () => {
       measure();
