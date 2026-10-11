@@ -20,6 +20,16 @@ export const MENU_ITEMS: Array<MenuItem> = [
     href: "/#services",
   },
   {
+    id: "projects",
+    label: "Projects",
+    href: "/projects",
+  },
+  {
+    id: "teams",
+    label: "Teams",
+    href: "/teams",
+  },
+  {
     id: "process",
     label: "Process",
     href: "/#process",

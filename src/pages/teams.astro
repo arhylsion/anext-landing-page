@@ -1,7 +1,7 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
-import HeroIsland from '../components/HeroIsland';
-import Footer from '../components/Footer.astro';
+import MainLayout from '@/layouts/MainLayout.astro';
+import HeroIsland from '@/components/sections/hero/HeroIsland';
+import Footer from '@/components/sections/footer/Footer.astro';
 
 const teamMembers = [
   {
@@ -738,7 +738,7 @@ const teamMembers = [
   import gsap from 'gsap';
 
   (function() {
-    const $ = (id: string) => document.getElementById(id);
+    const $ = (id: string) => document.getElementById(id) as HTMLElement;
     const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
     const ease = (t: number) => 1 - Math.pow(1 - t, 3);
     const inout = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;

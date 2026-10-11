@@ -2,7 +2,6 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
-import svgrPlugin from 'vite-plugin-svgr';
 
 function unwrapImageImports() {
   return {
@@ -31,7 +30,7 @@ export default defineConfig({
   },
   integrations: [react()],
   vite: {
-    plugins: [tailwindcss(), unwrapImageImports(), svgrPlugin()],
+    plugins: [tailwindcss(), unwrapImageImports()],
     optimizeDeps: {
       include:[ 
         'react',

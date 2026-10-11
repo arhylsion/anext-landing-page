@@ -21,15 +21,15 @@ anext-landing-page/
 ├── public/                 # Static assets (favicons, logos, optimized webp)
 ├── src/
 │   ├── components/         # Reusable Astro & React island components
-│   │   ├── teams/          # Dedicated team showcase components
 │   │   ├── Header.astro    # Navigation header
-│   │   ├── TechStack.astro # Interactive interactive tech stack section
+│   │   ├── TechStack.astro # Interactive tech stack section
 │   │   └── ...
-│   ├── data/               # Centralized data stores (e.g. tech-stack.ts)
+│   ├── data/               # Centralized data stores (menu.ts, projects.ts, tech-stack.ts)
 │   ├── layouts/            # Global HTML shell & SEO metadata (MainLayout.astro)
 │   ├── pages/              # Static page routes
 │   │   ├── index.astro     # Main landing page
-│   │   └── teams.astro     # Leadership & engineering team showcase
+│   │   ├── teams.astro     # Leadership & engineering team showcase
+│   │   └── projects.astro  # Interactive 3D WorksWheel projects showcase
 │   └── styles/             # Global CSS and Tailwind directives
 ├── astro.config.mjs        # Astro configuration & integrations
 └── tsconfig.json           # TypeScript configuration
@@ -69,10 +69,14 @@ Preview the static production build locally:
 npm run preview
 ```
 
-### Type Checking & Linting
-Run static type validation:
+### Type Checking & Diagnostics
+Run full Astro and TypeScript diagnostic validation:
 ```bash
-npx tsc --noEmit
+npm run check
+```
+Or TypeScript check only:
+```bash
+npm run typecheck
 ```
 
 

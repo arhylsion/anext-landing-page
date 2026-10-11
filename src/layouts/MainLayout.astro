@@ -10,6 +10,8 @@ const {
   title = "ANEXT - Connecting the Infinite | Engineering Solutions",
   description = "We exist to help your ideas grow into something real and reliable. We build systems that grow with you, from infrastructure to applications."
 } = Astro.props;
+
+const gaId = import.meta.env.PUBLIC_GA_ID || "G-6XRN4DXQ09";
 ---
 
 <!doctype html>
@@ -58,7 +60,7 @@ const {
         "description": "We exist to help your ideas grow into something real and reliable. Modern infrastructure and engineering solutions built for scale."
       }
     </script>
-    <script is:inline>
+    <script is:inline define:vars={{ gaId }}>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       function initGtag() {
@@ -66,10 +68,10 @@ const {
         window._gtagLoaded = true;
         const s = document.createElement('script');
         s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-6XRN4DXQ09';
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
         document.head.appendChild(s);
         gtag('js', new Date());
-        gtag('config', 'G-6XRN4DXQ09');
+        gtag('config', gaId);
       }
       function triggerGtag() {
         initGtag();
