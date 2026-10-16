@@ -128,7 +128,7 @@ export function MobileMenu({ open, close, items }: MobileMenuProps) {
       {/* Bottom CTA */}
       <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
         <a
-          href="#contact"
+          href="/teams"
           onClick={close}
           className="w-full sm:w-auto text-center px-7 py-3.5 rounded-full bg-white text-black font-semibold text-sm hover:bg-slate-200 transition-colors"
         >
